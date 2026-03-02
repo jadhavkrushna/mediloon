@@ -208,8 +208,4 @@ Access live traces at [cloud.langfuse.com](https://cloud.langfuse.com)
 **Krushna Jadhav**  
 [GitHub](https://github.com/jadhavkrushna)
 
----
 
-## 📄 License
-
-MIT — Hackfusion 2026
