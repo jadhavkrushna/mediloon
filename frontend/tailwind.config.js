@@ -7,7 +7,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                'brand': ['Inter', 'sans-serif'],
+                'brand': ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
                 'body': ['Roboto', 'Noto Sans Devanagari', 'Noto Sans Tamil', 'Noto Sans Telugu', 'Noto Sans Bengali', 'sans-serif'],
                 'mono': ['JetBrains Mono', 'monospace'],
             },
@@ -87,6 +87,8 @@ export default {
                 'dot-bounce': 'dot-bounce 1.4s infinite ease-in-out both',
                 'gradient-shift': 'gradient-shift 3s ease infinite',
                 'slide-in-right': 'slide-in-right 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                'radial-pulse': 'radial-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                'glow-border-spin': 'glow-border-spin 4s linear infinite',
             },
             keyframes: {
                 'float': {
@@ -145,6 +147,14 @@ export default {
                 'slide-in-right': {
                     '0%': { transform: 'translateX(100%)', opacity: '0' },
                     '100%': { transform: 'translateX(0)', opacity: '1' },
+                },
+                'radial-pulse': {
+                    '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+                    '50%': { transform: 'scale(1.5)', opacity: '0.5' },
+                },
+                'glow-border-spin': {
+                    '0%': { backgroundPosition: '0% 50%' },
+                    '100%': { backgroundPosition: '200% 50%' },
                 },
             },
         },
