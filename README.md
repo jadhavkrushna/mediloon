@@ -1,18 +1,32 @@
-# Mediloon — AI-Driven Agentic Pharmacy System
+<h1 align="center">
+  <br>
+  💊 Mediloon
+  <br>
+</h1>
 
-An autonomous pharmacy ecosystem powered by multi-agent AI. Customers order medications through natural voice or text conversation in **English, German, Arabic, and Hindi**. The system predicts refill needs, enforces prescription rules, and autonomously executes backend procurement — with minimal human intervention.
+<h4 align="center">AI-Driven Agentic Pharmacy System — Hackfusion 2026</h4>
 
-> **Hackfusion 2026** — AI-Driven Agentic Ordering & Autonomous Pharmacy System
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
+  <img src="https://img.shields.io/badge/LLM-Groq%20%7C%20OpenRouter-orange?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
+</p>
+
+<p align="center">
+  An autonomous pharmacy ecosystem powered by a <strong>multi-agent AI</strong>. Customers order medications through natural <strong>voice or text</strong> conversation in English, German, Arabic, and Hindi. The system predicts refill needs, enforces prescription rules, and autonomously executes backend procurement — with minimal human intervention.
+</p>
 
 ---
 
-## ✨ Key Features
+## ✨ Features
 
 | Feature | Description |
 |---|---|
-| 🎤 **Voice & Text Ordering** | Natural conversation interface with multi-turn context understanding |
-| 🌍 **Multi-Language** | English, German (Deutsch), Arabic (العربية), Hindi (हिन्दी) — auto-detected |
-| 🤖 **Multi-Agent Architecture** | Ordering, Safety, Forecast, Procurement agents working autonomously |
+| 🎤 **Voice & Text Ordering** | Natural conversation with multi-turn context understanding |
+| 🌍 **Multi-Language** | English, Deutsch, العربية, हिन्दी — auto-detected |
+| 🤖 **Multi-Agent Architecture** | Ordering, Safety, Forecast & Procurement agents |
 | 💊 **Safety Enforcement** | Prescription (RX) validation, no medical advice, Tier-1 alternatives only |
 | 📈 **Predictive Refills** | Learns from order history, predicts depletion dates, auto-suggests refills |
 | 🏭 **Warehouse Fulfillment** | Webhook-triggered fulfillment with auto-procurement on low stock |
@@ -24,70 +38,71 @@ An autonomous pharmacy ecosystem powered by multi-agent AI. Customers order medi
 ## 🏗️ Architecture
 
 ```
-┌───────────────────────────────────────────────────┐
-│                    Frontend (React + Vite)          │
-│  Chat UI · Voice Overlay · Admin Dashboard          │
-│  Prediction Timeline · Cart · Language Selector     │
-└──────────────────────┬────────────────────────────┘
-                       │ REST API
-┌──────────────────────┴────────────────────────────┐
-│               FastAPI Backend                      │
-│                                                    │
-│  ┌─────────────┐  ┌──────────────┐                │
-│  │  Ordering    │  │   Safety     │                │
-│  │  Agent (LLM) │  │   Agent      │                │
-│  └──────┬──────┘  └──────────────┘                │
-│         │                                          │
-│  ┌──────┴──────┐  ┌──────────────┐                │
-│  │ Orchestrator │  │  Forecast    │                │
-│  │ (Pipeline)   │  │  Agent       │                │
-│  └──────┬──────┘  └──────────────┘                │
-│         │                                          │
-│  ┌──────┴──────┐  ┌──────────────┐                │
-│  │  Tool       │  │ Procurement  │                │
-│  │  Executor   │  │ Agent        │──→ Webhooks    │
-│  └─────────────┘  └──────────────┘                │
-│                                                    │
-│  SQLite · ChromaDB · Langfuse                      │
-└────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────┐
+│         Frontend  (React + Vite)          │
+│  Chat UI · Voice · Admin · Predictions   │
+└─────────────────┬────────────────────────┘
+                  │ REST API
+┌─────────────────┴────────────────────────┐
+│              FastAPI Backend              │
+│                                          │
+│  Ordering Agent ──► Safety Agent         │
+│       │                                  │
+│  Orchestrator ──► Forecast Agent         │
+│       │                                  │
+│  Tool Executor ──► Procurement Agent ──► Webhooks
+│                                          │
+│  SQLite · ChromaDB · Langfuse            │
+└──────────────────────────────────────────┘
 ```
 
-### Multi-Agent System
+### 🤖 Agents
 
 | Agent | Role |
 |---|---|
-| **Ordering Agent** | LLM-powered conversational agent. Understands intent from natural language, manages cart flow, handles multi-turn context. |
-| **Safety Agent** | Validates inputs, enforces prescription rules, blocks medical advice, checks drug safety. |
-| **Forecast Agent** | Predicts store stock depletion using sales velocity analysis. Triggers proactive alerts. |
-| **Procurement Agent** | Auto-generates purchase orders, sends real HTTP webhooks to suppliers, updates inventory on delivery. |
+| **Ordering Agent** | LLM-powered conversational agent. Understands intent, manages cart, handles multi-turn context |
+| **Safety Agent** | Validates inputs, enforces prescription rules, blocks medical advice, checks drug safety |
+| **Forecast Agent** | Predicts stock depletion using sales velocity analysis. Triggers proactive alerts |
+| **Procurement Agent** | Auto-generates purchase orders, sends webhooks to suppliers, updates inventory |
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React 18 + Vite + Tailwind CSS |
+| Backend | Python FastAPI |
+| Database | SQLite |
+| Vector Store | ChromaDB + sentence-transformers |
+| LLM (Primary) | Groq — Llama 3.3 70B |
+| LLM (Fallback) | OpenRouter — Gemma 3 27B |
+| Voice | Web Speech API (STT / TTS) |
+| Observability | Langfuse |
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.10+
-- Node.js 18+
-- API Keys (see below)
+- Python **3.10+**
+- Node.js **18+**
+- API Keys (Groq, Langfuse)
 
 ### 1. Clone & Configure
 
 ```bash
-git clone <repo-url>
-cd hackfusion
+git clone https://github.com/jadhavkrushna/mediloon.git
+cd mediloon
 
-# Create .env in project root
 cp .env.example .env
-# Edit .env and add your API keys
+# Fill in your API keys in .env
 ```
 
 **Required `.env` variables:**
 ```env
-# LLM Providers (at least one required)
-GROQ_API_KEY=gsk_...          # Primary — fast, free tier
-OPENROUTER_API_KEY=sk-or-...  # Fallback
-
-# Langfuse Observability (REQUIRED for submission)
+GROQ_API_KEY=gsk_...
+OPENROUTER_API_KEY=sk-or-...
 LANGFUSE_PUBLIC_KEY=pk-lf-...
 LANGFUSE_SECRET_KEY=sk-lf-...
 LANGFUSE_HOST=https://cloud.langfuse.com
@@ -98,11 +113,17 @@ LANGFUSE_HOST=https://cloud.langfuse.com
 ```bash
 cd backend
 python -m venv venv
+
+# Windows
+venv\Scripts\activate
+
+# Mac / Linux
 source venv/bin/activate
+
 pip install -r requirements.txt
 python main.py
 ```
-Backend runs at **http://localhost:8000**
+> Backend runs at **http://localhost:8000**
 
 ### 3. Start Frontend
 
@@ -111,67 +132,50 @@ cd frontend
 npm install
 npm run dev
 ```
-Frontend runs at **http://localhost:5173**
+> Frontend runs at **http://localhost:5173**
 
 ---
 
-## 📊 Observability (Langfuse)
+## � Project Structure
 
-Every agent turn is traced with full Chain of Thought:
-
-- **Safety Check** → Input validation result
-- **Ordering Agent** → LLM reasoning, action chosen, model used
-- **Tool Execution** → Search results, cart operations
-- **Output Guard** → Final safety check
-
-**Live traces:** Access your project at [cloud.langfuse.com](https://cloud.langfuse.com) → Sessions to see all conversation traces.
+```
+mediloon/
+├── backend/
+│   ├── agents/
+│   │   ├── orchestrator.py       # Main pipeline
+│   │   ├── ordering_agent.py     # LLM conversational agent
+│   │   ├── safety_agent.py       # Input/output guardrails
+│   │   ├── forecast_agent.py     # Stock depletion predictions
+│   │   └── procurement_agent.py  # Auto-procurement + webhooks
+│   ├── routes/                   # FastAPI endpoints
+│   ├── tools/                    # Cart, query, trace tools
+│   ├── db/                       # SQLite database + seed data
+│   ├── vector/                   # ChromaDB vector search
+│   ├── observability/            # Langfuse client
+│   └── main.py                   # Server entry point
+├── frontend/
+│   └── src/
+│       ├── components/           # UI components
+│       ├── hooks/                # useSpeech, useRefillPredictions
+│       ├── i18n/                 # Language context + translations
+│       └── pages/                # AdminDashboard
+├── data/                         # Excel source files
+├── .env.example                  # Environment variables template
+└── README.md
+```
 
 ---
 
-## 🔌 API Endpoints
+## 🔌 API Overview
 
-### Agent / Chat
 | Method | Endpoint | Description |
 |---|---|---|
 | `POST` | `/api/chat` | Main chat endpoint (text & voice) |
-| `POST` | `/api/voice` | Voice input endpoint |
 | `GET` | `/api/cart/{session_id}` | Get session cart |
-| `POST` | `/api/cart/{session_id}/add` | Direct add-to-cart |
-| `GET` | `/api/trace/{session_id}` | Get agent trace |
-| `GET` | `/api/search/medications?q=` | Search medications |
-
-### Admin / Inventory
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/admin/medications` | List all medications |
-| `PUT` | `/api/admin/inventory/{id}` | Update stock level |
-| `POST` | `/api/admin/reindex` | Rebuild vector store |
-
-### Procurement & Webhooks
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/procurement/orders` | List procurement orders |
-| `POST` | `/api/procurement/generate` | Auto-generate PO from forecast |
-| `POST` | `/api/procurement/send/{id}` | Send PO to supplier via webhook |
-| `POST` | `/api/warehouse/fulfill` | Mock warehouse fulfillment |
-| `POST` | `/api/webhooks/receive` | Incoming webhook receiver |
-
-### Forecast & Refills
-| Method | Endpoint | Description |
-|---|---|---|
 | `GET` | `/api/forecast/low-stock` | Predicted stock-outs |
-| `GET` | `/api/refill/predictions/{customer_id}` | Customer refill predictions |
-| `GET` | `/api/refill/timeline/{customer_id}` | Visual refill timeline |
-
----
-
-## 🗂️ Data Sources
-
-All data comes from the provided Excel files:
-1. **`products-export.xlsx`** — Medicine master data (names, prices, stock, RX flags)
-2. **`Consumer Order History 1.xlsx`** — Historical customer orders for predictive intelligence
-
-No hardcoded or external data is used.
+| `GET` | `/api/refill/predictions/{id}` | Customer refill predictions |
+| `POST` | `/api/procurement/generate` | Auto-generate purchase order |
+| `GET` | `/api/admin/medications` | List all medications |
 
 ---
 
@@ -181,54 +185,31 @@ No hardcoded or external data is used.
 - ✅ No medical advice, diagnoses, or dosage recommendations
 - ✅ No antibiotic suggestions
 - ✅ Tier-1 alternatives only (same active ingredient)
-- ✅ All medications from database only (no hallucination)
-- ✅ Input & output guardrails on every turn
+- ✅ All medications sourced from database only — no hallucination
+- ✅ Input & output guardrails on every agent turn
 
 ---
 
-## 🛠️ Tech Stack
+## � Observability
 
-| Layer | Technology |
-|---|---|
-| Frontend | React 18 + Vite + Tailwind CSS |
-| Backend | Python FastAPI |
-| Database | SQLite (mock backend) |
-| Vector Store | ChromaDB + sentence-transformers |
-| LLM (Primary) | Groq — Llama 3.3 70B |
-| LLM (Fallback) | OpenRouter — Gemma 3 27B, Llama 3.3 70B |
-| Voice | Web Speech API (STT/TTS) |
-| Observability | Langfuse |
+Every agent turn is traced via **Langfuse**:
+
+- **Safety Check** → Input validation result
+- **Ordering Agent** → LLM reasoning, action chosen, model used
+- **Tool Execution** → Search results, cart operations
+- **Output Guard** → Final safety check
+
+Access live traces at [cloud.langfuse.com](https://cloud.langfuse.com)
 
 ---
 
-## 📁 Project Structure
+## 👨‍💻 Author
 
-```
-hackfusion/
-├── backend/
-│   ├── agents/           # Multi-agent system
-│   │   ├── orchestrator.py      # Main pipeline
-│   │   ├── ordering_agent.py    # LLM conversational agent
-│   │   ├── safety_agent.py      # Input/output guardrails
-│   │   ├── forecast_agent.py    # Stock depletion predictions
-│   │   └── procurement_agent.py # Auto-procurement + webhooks
-│   ├── routes/           # FastAPI endpoints
-│   ├── tools/            # Cart, query, trace tools
-│   ├── db/               # SQLite database + seed data
-│   ├── vector/           # ChromaDB vector search
-│   ├── observability/    # Langfuse client
-│   ├── services/         # Event logging, user intelligence
-│   └── main.py           # Server entry point
-├── frontend/
-│   └── src/
-│       ├── components/   # UI components
-│       ├── hooks/        # useSpeech, useRefillPredictions
-│       ├── i18n/         # Language context + translations
-│       └── pages/        # AdminDashboard
-├── data/                 # Excel source files
-└── .env                  # API keys & config
-```
+**Krushna Jadhav**  
+[GitHub](https://github.com/jadhavkrushna)
 
-## License
+---
 
-MIT — Hackfusion 2026 Demo
+## 📄 License
+
+MIT — Hackfusion 2026
