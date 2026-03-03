@@ -19,7 +19,7 @@ const translations = {
     welcomeMessage: "Hi! I'm Mediloon AI. Need a medicine or have a prescription? Just ask!",
     typeMessage: 'Type a message or speak...',
     sorry: 'Sorry, I encountered an issue.',
-    uploading: 'Uploading',
+    uploading: 'Uploading...',
 
     // Feature Cards
     voiceOrdering: 'Voice Ordering',
@@ -35,7 +35,7 @@ const translations = {
     tapUploadPrescription: 'Tap to Upload Prescription',
 
     // Cart
-    yourCart: 'Your Cart',
+    yourCart: 'See Your Cart',
     clearAll: 'Clear all',
     cartEmpty: 'Your cart is empty',
     addViaChatOrSearch: 'Add medicines via chat or search',
