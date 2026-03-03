@@ -61,18 +61,19 @@ export default function TracePanel({ trace, latency, traceId, traceUrl, external
                 document.body
             )}
 
-            {/* Normal Panel */}
-            <div className="flex flex-col bg-[#0D0D1A] border border-gray-800/40 shadow-2xl rounded-2xl overflow-hidden h-[220px]">
-                {/* Header */}
-                <div className="flex items-center justify-between px-4 py-2.5 bg-[#08081A] border-b border-gray-800/40 flex-shrink-0">
-                    <div className="flex items-center gap-2">
-                        <div className="relative">
+            {/* Normal Panel — intentional dark terminal widget */}
+            <div className="flex flex-col bg-[#0A0A18] border border-slate-700/40 shadow-md rounded-2xl overflow-hidden h-[240px]">
+                {/* Gradient Header */}
+                <div className="flex items-center justify-between px-4 py-2.5 bg-gradient-to-r from-[#0f0f24] to-[#0a0a18] border-b border-slate-700/30 flex-shrink-0">
+                    <div className="flex items-center gap-2.5">
+                        {/* Live indicator */}
+                        <div className="relative flex items-center justify-center">
                             <div className="w-2 h-2 rounded-full bg-mediloon-500 animate-pulse" />
-                            <div className="absolute inset-0 w-2 h-2 rounded-full bg-mediloon-500 blur-sm opacity-50" />
+                            <div className="absolute w-4 h-4 rounded-full bg-mediloon-500/20 animate-ping" />
                         </div>
-                        <span className="font-brand font-semibold text-gray-200 tracking-wide text-xs">{t('agentTrace')}</span>
+                        <span className="font-brand font-semibold text-slate-300 tracking-wide text-xs">{t('agentTrace')}</span>
                         {latency && (
-                            <span className="text-[10px] font-mono text-accent-emerald bg-accent-emerald/10 px-1.5 py-0.5 rounded-md border border-accent-emerald/20">
+                            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-400/10 px-1.5 py-0.5 rounded-md border border-emerald-400/20">
                                 {latency}ms
                             </span>
                         )}
@@ -80,10 +81,10 @@ export default function TracePanel({ trace, latency, traceId, traceUrl, external
 
                     <button
                         onClick={() => setInternalOpen(true)}
-                        className="p-1.5 rounded-lg hover:bg-gray-800 text-gray-500 hover:text-white transition-all duration-200 active:scale-95"
+                        className="p-1.5 rounded-lg hover:bg-slate-700/60 text-slate-500 hover:text-slate-200 transition-all duration-200 active:scale-95"
                         title={t('expandTraceView')}
                     >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                         </svg>
                     </button>
@@ -92,7 +93,7 @@ export default function TracePanel({ trace, latency, traceId, traceUrl, external
                 {/* Trace Content */}
                 <div
                     ref={scrollRef}
-                    className="flex-1 overflow-y-auto p-3 space-y-3 bg-[#0D0D1A]/50 scroll-smooth"
+                    className="flex-1 overflow-y-auto p-3 space-y-3 scroll-smooth"
                 >
                     {renderTraceContent(trace, traceUrl, t)}
                 </div>

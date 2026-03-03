@@ -1,12 +1,24 @@
 /**
- * TextInput — Sleek input bar with send and upload buttons
+ * TextInput — Unified pill-shaped input bar
+ * Layout: [📎/📷 upload] [text input flex-1] [🎤 mic button]
  */
 import React, { useState, useRef } from 'react';
+import {
+    FiPlus,
+    FiPaperclip,
+    FiCamera,
+    FiSend,
+    FiMic,
+    FiLoader,
+} from 'react-icons/fi';
 
-export default function TextInput({ onSend, onUpload, disabled, placeholder }) {
+export default function TextInput({ onSend, onUpload, disabled, placeholder, leftSlot }) {
     const [text, setText] = useState('');
     const fileInputRef = useRef(null);
+    const cameraInputRef = useRef(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [showUploadMenu, setShowUploadMenu] = useState(false);
+    const menuRef = useRef(null);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -25,6 +37,7 @@ export default function TextInput({ onSend, onUpload, disabled, placeholder }) {
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
+        setShowUploadMenu(false);
         setIsUploading(true);
         try {
             await onUpload(file);
@@ -32,87 +45,137 @@ export default function TextInput({ onSend, onUpload, disabled, placeholder }) {
             console.error(err);
         } finally {
             setIsUploading(false);
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-            }
+            if (fileInputRef.current) fileInputRef.current.value = '';
+            if (cameraInputRef.current) cameraInputRef.current.value = '';
         }
     };
 
+    const canSend = text.trim() && !disabled;
+
     return (
-        <form onSubmit={handleSubmit} className="flex gap-2 w-full">
+        <div className="w-full relative">
+            {/* Hidden file inputs */}
             <input
                 type="file"
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 className="hidden"
-                accept="image/*"
+                accept="image/*,.pdf"
             />
-
-            {/* Upload Button */}
-            <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={disabled || isUploading}
-                className={`p-3 rounded-2xl border-2 border-surface-fog text-ink-faint 
-                    hover:border-mediloon-200 hover:text-mediloon-500 hover:bg-mediloon-50/50 
-                    transition-all duration-200 active:scale-95
-                    ${isUploading ? 'animate-pulse' : ''}`}
-            >
-                {isUploading ? (
-                    <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                ) : (
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                    </svg>
-                )}
-            </button>
-
-            {/* Text Input */}
             <input
-                type="text"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={placeholder || "Type a message or speak..."}
-                disabled={disabled}
-                className={`
-                    flex-1 px-4 py-3 rounded-2xl border-2 border-surface-fog
-                    font-body text-ink-primary placeholder:text-ink-ghost
-                    focus:border-mediloon-400 focus:outline-none focus:ring-2 focus:ring-mediloon-100
-                    transition-all duration-200
-                    ${disabled ? 'opacity-50 cursor-not-allowed bg-surface-cloud' : 'bg-white'}
-                `}
+                type="file"
+                ref={cameraInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+                accept="image/*"
+                capture="environment"
             />
 
-            {/* Send Button */}
-            <button
-                type="submit"
-                disabled={disabled || !text.trim()}
-                className={`
-                    px-5 py-3 rounded-2xl font-brand font-semibold transition-all duration-200
-                    ${text.trim() && !disabled
-                        ? 'bg-gradient-to-r from-mediloon-500 to-mediloon-600 text-white shadow-md shadow-mediloon-200 hover:shadow-lg hover:shadow-mediloon-300 hover:-translate-y-0.5 active:translate-y-0 active:scale-95'
-                        : 'bg-surface-cloud text-ink-ghost cursor-not-allowed'
+            {/* Upload options pop-up menu */}
+            {showUploadMenu && (
+                <>
+                    {/* Backdrop to dismiss */}
+                    <div
+                        className="fixed inset-0 z-10"
+                        onClick={() => setShowUploadMenu(false)}
+                    />
+                    <div
+                        ref={menuRef}
+                        className="absolute bottom-[calc(100%+10px)] left-0 z-20 bg-white border border-slate-100 rounded-2xl shadow-lg p-1.5 flex flex-col gap-0.5 min-w-[168px] animate-fade-in-up"
+                    >
+                        <button
+                            type="button"
+                            onClick={() => { setShowUploadMenu(false); fileInputRef.current?.click(); }}
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-mediloon-600 transition-all duration-150 text-sm font-brand font-medium"
+                        >
+                            <div className="w-8 h-8 rounded-lg bg-mediloon-50 flex items-center justify-center flex-shrink-0">
+                                <FiPaperclip className="w-4 h-4 text-mediloon-600" />
+                            </div>
+                            <span>Attach File</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => { setShowUploadMenu(false); cameraInputRef.current?.click(); }}
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-mediloon-600 transition-all duration-150 text-sm font-brand font-medium"
+                        >
+                            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                                <FiCamera className="w-4 h-4 text-blue-500" />
+                            </div>
+                            <span>Take Photo</span>
+                        </button>
+                    </div>
+                </>
+            )}
+
+            <form onSubmit={handleSubmit} className="w-full">
+                {/* Unified pill container */}
+                <div className={`
+                    flex items-center w-full rounded-full border bg-white shadow-sm
+                    transition-all duration-200
+                    ${disabled
+                        ? 'border-surface-fog opacity-60'
+                        : 'border-surface-fog hover:border-mediloon-200 focus-within:border-mediloon-400 focus-within:shadow-md focus-within:shadow-mediloon-100/50'
                     }
-                `}
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <line x1="22" y1="2" x2="11" y2="13" />
-                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                </svg>
-            </button>
-        </form>
+                `}>
+
+                    {/* ── LEFT: Upload button (clip + camera) ── */}
+                    <button
+                        type="button"
+                        onClick={() => setShowUploadMenu(prev => !prev)}
+                        disabled={disabled || isUploading}
+                        title="Attach file or take photo"
+                        className={`
+                            flex-shrink-0 w-10 h-10 ml-1.5 rounded-full flex items-center justify-center gap-0.5
+                            transition-all duration-200 active:scale-95
+                            ${showUploadMenu
+                                ? 'bg-mediloon-50 text-mediloon-600'
+                                : 'text-slate-400 hover:text-mediloon-500 hover:bg-mediloon-50'
+                            }
+                            ${isUploading ? 'animate-pulse text-mediloon-400' : ''}
+                        `}
+                    >
+                        {isUploading ? (
+                            <FiLoader className="w-4 h-4 animate-spin" />
+                        ) : (
+                            <FiPlus
+                                className={`w-5 h-5 transition-transform duration-200 ${showUploadMenu ? 'rotate-45' : ''}`}
+                            />
+                        )}
+                    </button>
+
+                    {/* ── CENTER: Seamless text input ── */}
+                    <input
+                        type="text"
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder={placeholder || 'Type a message or speak...'}
+                        disabled={disabled}
+                        className={`
+                            flex-1 min-w-0 py-3 px-3 bg-transparent border-none outline-none ring-0
+                            font-body text-sm text-ink-primary placeholder:text-ink-ghost
+                            ${disabled ? 'cursor-not-allowed' : ''}
+                        `}
+                    />
+
+                    {/* ── RIGHT: Send button (when text present) or Mic button (injected via leftSlot prop) ── */}
+                    {canSend ? (
+                        <button
+                            type="submit"
+                            className="flex-shrink-0 w-10 h-10 mr-1.5 rounded-full flex items-center justify-center bg-mediloon-600 text-white shadow-sm hover:bg-mediloon-700 hover:shadow-md hover:-translate-y-px transition-all duration-200 active:scale-95"
+                        >
+                            <FiSend className="w-4 h-4" />
+                        </button>
+                    ) : (
+                        /* Mic/voice button slot from parent */
+                        leftSlot ? (
+                            <div className="flex-shrink-0 mr-1.5">
+                                {leftSlot}
+                            </div>
+                        ) : null
+                    )}
+                </div>
+            </form>
+        </div>
     );
 }

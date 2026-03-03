@@ -119,10 +119,10 @@ function MedicationListMessage({ pre, items, post, latency }) {
                         {/* Stock badge */}
                         {item.stock != null && (
                             <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold flex-shrink-0 tabular-nums ${item.stock > 10
-                                    ? 'bg-green-50 text-green-700 border border-green-100'
-                                    : item.stock > 0
-                                        ? 'bg-amber-50 text-amber-700 border border-amber-100'
-                                        : 'bg-red-50 text-red-600 border border-red-100'
+                                ? 'bg-green-50 text-green-700 border border-green-100'
+                                : item.stock > 0
+                                    ? 'bg-amber-50 text-amber-700 border border-amber-100'
+                                    : 'bg-red-50 text-red-600 border border-red-100'
                                 }`}>
                                 {item.stock > 0 ? `${item.stock} pcs` : 'Out'}
                             </span>
@@ -175,7 +175,7 @@ export default function ChatMessage({ message, isUser, isLoading, latency }) {
                     <div className="w-6 h-6 md:w-7 md:h-7 rounded-lg md:rounded-xl bg-mediloon-50 flex items-center justify-center flex-shrink-0 mt-0.5">
                         <span className="text-mediloon-500 font-brand font-bold text-[10px] md:text-xs">M</span>
                     </div>
-                    <div className="bg-surface-cloud rounded-2xl rounded-tl-md px-3 py-2 md:px-4 md:py-3 max-w-[85%] md:max-w-[80%]">
+                    <div className="bg-[#F4F7FB] rounded-2xl rounded-tl-md px-3 py-2 md:px-4 md:py-3 max-w-[85%] md:max-w-[80%]">
                         <div className="flex gap-1.5">
                             <span className="loading-dot"></span>
                             <span className="loading-dot"></span>
@@ -190,17 +190,17 @@ export default function ChatMessage({ message, isUser, isLoading, latency }) {
     return (
         <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} message-enter`}>
             {isUser ? (
-                /* User message — Red gradient bubble */
-                <div className="bg-gradient-to-br from-mediloon-500 to-mediloon-700 text-white rounded-[1.2rem] md:rounded-2xl rounded-br-md px-3 py-2 md:px-4 md:py-3 max-w-[85%] md:max-w-[80%] shadow-md shadow-mediloon-100">
+                /* User message — Medical Blue solid bubble */
+                <div className="bg-mediloon-600 text-white rounded-[1.2rem] md:rounded-2xl rounded-br-md px-3 py-2 md:px-4 md:py-3 max-w-[85%] md:max-w-[80%] shadow-md shadow-mediloon-200">
                     <p className="whitespace-pre-wrap text-[13.5px] md:text-[14.5px] font-body leading-relaxed" dir="auto">{message}</p>
                 </div>
             ) : (
-                /* Bot message — White bubble with avatar */
+                /* Bot message — Soft blue-gray bubble with avatar */
                 <div className="flex items-start gap-2 md:gap-2.5 max-w-[92%] md:max-w-[88%]">
-                    <div className="w-6 h-6 md:w-7 md:h-7 rounded-lg md:rounded-xl bg-mediloon-50 flex items-center justify-center flex-shrink-0 mt-0.5 border border-mediloon-100">
-                        <span className="text-mediloon-500 font-brand font-bold text-[10px] md:text-xs">M</span>
+                    <div className="w-6 h-6 md:w-7 md:h-7 rounded-lg md:rounded-xl bg-mediloon-50 flex items-center justify-center flex-shrink-0 mt-0.5 border border-mediloon-200">
+                        <span className="text-mediloon-600 font-brand font-bold text-[10px] md:text-xs">M</span>
                     </div>
-                    <div className="bg-white border border-surface-fog rounded-[1.2rem] md:rounded-2xl rounded-tl-md px-3 py-2 md:px-4 md:py-3 shadow-sm">
+                    <div className="bg-[#F4F7FB] border border-[#E2E8F0] rounded-[1.2rem] md:rounded-2xl rounded-tl-md px-3 py-2 md:px-4 md:py-3 shadow-sm">
                         {parsed?.type === 'medication_list' ? (
                             <MedicationListMessage
                                 pre={parsed.pre}

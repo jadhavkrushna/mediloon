@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -30,7 +32,7 @@
     }
 
     ::selection {
-        @apply bg-mediloon-100 text-mediloon-800;
+        @apply bg-mediloon-100 text-mediloon-900;
     }
 
     /* Refined scrollbar */
@@ -55,7 +57,7 @@
     /* Firefox scrollbar */
     * {
         scrollbar-width: thin;
-        scrollbar-color: #FECACA transparent;
+        scrollbar-color: #B3CFFF transparent;
     }
 }
 
@@ -138,13 +140,13 @@
     .glow-ring::after {
         content: '';
         @apply absolute inset-0 rounded-full;
-        box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+        box-shadow: 0 0 20px rgba(50, 112, 252, 0.35);
         animation: glow-pulse 2s ease-in-out infinite;
     }
 
     /* Loading dots */
     .loading-dot {
-        @apply w-2 h-2 rounded-full bg-mediloon-300;
+        @apply w-2 h-2 rounded-full bg-mediloon-400;
         animation: dot-bounce 1.4s infinite ease-in-out both;
     }
 
@@ -187,7 +189,14 @@
 
     /* Gradient text */
     .text-gradient-red {
-        @apply bg-gradient-to-r from-mediloon-600 to-mediloon-500 bg-clip-text text-transparent;
+        @apply bg-gradient-to-r from-mediloon-700 to-mediloon-500 bg-clip-text text-transparent;
+    }
+
+    /* Medic theme: chat container float effect */
+    .chat-float {
+        background: #FFFFFF;
+        border-radius: 12px;
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.08);
     }
 }
 
@@ -208,4 +217,235 @@
     .backface-hidden {
         backface-visibility: hidden;
     }
+}
+
+/* ============================================
+   MEDIC BLUE THEME OVERRIDES
+   Overrides for mediloon-* Tailwind utilities
+   Primary Medical Blue: #3270FC
+   These ensure HMR picks up color changes
+   without requiring a dev server restart.
+   ============================================ */
+
+/* Background overrides */
+.bg-mediloon-50 {
+    background-color: #EEF4FF !important;
+}
+
+.bg-mediloon-100 {
+    background-color: #DDEAFF !important;
+}
+
+.bg-mediloon-200 {
+    background-color: #B3CFFF !important;
+}
+
+.bg-mediloon-300 {
+    background-color: #80AAFF !important;
+}
+
+.bg-mediloon-400 {
+    background-color: #5288FD !important;
+}
+
+.bg-mediloon-500 {
+    background-color: #3270FC !important;
+}
+
+.bg-mediloon-600 {
+    background-color: #3270FC !important;
+}
+
+.bg-mediloon-700 {
+    background-color: #1D5CE8 !important;
+}
+
+.bg-mediloon-800 {
+    background-color: #1548C5 !important;
+}
+
+.bg-mediloon-900 {
+    background-color: #0E369E !important;
+}
+
+/* Text overrides */
+.text-mediloon-50 {
+    color: #EEF4FF !important;
+}
+
+.text-mediloon-100 {
+    color: #DDEAFF !important;
+}
+
+.text-mediloon-200 {
+    color: #B3CFFF !important;
+}
+
+.text-mediloon-300 {
+    color: #80AAFF !important;
+}
+
+.text-mediloon-400 {
+    color: #5288FD !important;
+}
+
+.text-mediloon-500 {
+    color: #3270FC !important;
+}
+
+.text-mediloon-600 {
+    color: #3270FC !important;
+}
+
+.text-mediloon-700 {
+    color: #1D5CE8 !important;
+}
+
+.text-mediloon-800 {
+    color: #1548C5 !important;
+}
+
+.text-mediloon-900 {
+    color: #0E369E !important;
+}
+
+/* Border overrides */
+.border-mediloon-50 {
+    border-color: #EEF4FF !important;
+}
+
+.border-mediloon-100 {
+    border-color: #DDEAFF !important;
+}
+
+.border-mediloon-200 {
+    border-color: #B3CFFF !important;
+}
+
+.border-mediloon-300 {
+    border-color: #80AAFF !important;
+}
+
+.border-mediloon-400 {
+    border-color: #5288FD !important;
+}
+
+.border-mediloon-500 {
+    border-color: #3270FC !important;
+}
+
+.border-mediloon-600 {
+    border-color: #3270FC !important;
+}
+
+.border-mediloon-700 {
+    border-color: #1D5CE8 !important;
+}
+
+/* Gradient overrides — used in TextInput send button and mic button */
+.from-mediloon-400 {
+    --tw-gradient-from: #5288FD !important;
+}
+
+.from-mediloon-500 {
+    --tw-gradient-from: #3270FC !important;
+}
+
+.from-mediloon-600 {
+    --tw-gradient-from: #3270FC !important;
+}
+
+.to-mediloon-600 {
+    --tw-gradient-to: #3270FC !important;
+}
+
+.to-mediloon-700 {
+    --tw-gradient-to: #1D5CE8 !important;
+}
+
+.via-mediloon-600 {
+    --tw-gradient-stops: var(--tw-gradient-from), #3270FC, var(--tw-gradient-to) !important;
+}
+
+.via-mediloon-400 {
+    --tw-gradient-stops: var(--tw-gradient-from), #5288FD, var(--tw-gradient-to) !important;
+}
+
+/* Shadow overrides — mic ring pulsing glow */
+.shadow-mediloon-100\/50 {
+    --tw-shadow-color: rgba(221, 234, 255, 0.5) !important;
+}
+
+.shadow-mediloon-200 {
+    box-shadow: 0 4px 6px -1px rgba(179, 207, 255, 0.4) !important;
+}
+
+.shadow-mediloon-300\/40 {
+    --tw-shadow-color: rgba(128, 170, 255, 0.4) !important;
+}
+
+.shadow-mediloon-200\/60 {
+    --tw-shadow-color: rgba(179, 207, 255, 0.6) !important;
+}
+
+/* Focus ring override for inputs */
+.focus-within\:border-mediloon-400:focus-within {
+    border-color: #5288FD !important;
+}
+
+.focus-within\:shadow-mediloon-100\/50:focus-within {
+    --tw-shadow-color: rgba(221, 234, 255, 0.5) !important;
+}
+
+.hover\:border-mediloon-200:hover {
+    border-color: #B3CFFF !important;
+}
+
+/* Scrollbar override */
+::-webkit-scrollbar-thumb {
+    background-color: #B3CFFF !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #5288FD !important;
+}
+
+/* Prescription banner dashed border fix */
+.border-mediloon-200 {
+    border-color: #B3CFFF !important;
+}
+
+.hover\:border-mediloon-400:hover {
+    border-color: #5288FD !important;
+}
+
+.hover\:text-mediloon-600:hover {
+    color: #3270FC !important;
+}
+
+.hover\:bg-mediloon-50:hover {
+    background-color: #EEF4FF !important;
+}
+
+.hover\:shadow-glow-red-sm:hover {
+    box-shadow: 0 0 12px rgba(50, 112, 252, 0.2) !important;
+}
+
+.hover\:bg-mediloon-200:hover {
+    background-color: #B3CFFF !important;
+}
+
+/* Ping animation in voice button */
+.bg-mediloon-400\/30 {
+    background-color: rgba(82, 136, 253, 0.3) !important;
+}
+
+/* Header accent line */
+.from-mediloon-400 {
+    --tw-gradient-from: #5288FD !important;
+}
+
+/* Selection highlight */
+.selection\:bg-mediloon-100 *::selection {
+    background-color: #DDEAFF !important;
 }

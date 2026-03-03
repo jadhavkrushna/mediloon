@@ -144,7 +144,7 @@ export default function LiveOverlay({
                 <div className="relative">
                     <button
                         onClick={() => setShowLangMenu(v => !v)}
-                        className="flex items-center gap-2 px-3 py-2 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl shadow-sm hover:border-red-200 hover:text-red-600 transition-colors text-sm font-semibold"
+                        className="flex items-center gap-2 px-3 py-2 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl shadow-sm hover:border-mediloon-200 hover:text-mediloon-600 transition-colors text-sm font-semibold"
                         title={t('chooseListeningLanguage')}
                     >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m3 14h9m-9 0a3 3 0 01-3-3v-4m0 7a3 3 0 01-3-3v-4m6 7v-4m0 0a3 3 0 00-3-3H3" /></svg>
@@ -168,7 +168,7 @@ export default function LiveOverlay({
                                             }
                                             setShowLangMenu(false);
                                         }}
-                                        className={`w-full text-left px-4 py-3 flex flex-col gap-0.5 transition-colors ${isActive ? 'bg-red-50 text-red-600 font-semibold' : 'hover:bg-gray-50 text-gray-700'}`}
+                                        className={`w-full text-left px-4 py-3 flex flex-col gap-0.5 transition-colors ${isActive ? 'bg-mediloon-50 text-mediloon-600 font-semibold' : 'hover:bg-gray-50 text-gray-700'}`}
                                     >
                                         <span className="text-sm">{opt.label}</span>
                                         {opt.sub && <span className="text-xs text-gray-500">{opt.sub}</span>}
@@ -184,7 +184,7 @@ export default function LiveOverlay({
             {cartCount > 0 && (
                 <div className="absolute bottom-8 right-8 z-20 pointer-events-none">
                     <div className="relative flex items-center gap-2 bg-white/90 backdrop-blur-sm px-4 py-2.5 rounded-2xl shadow-xl border border-gray-200 animate-fade-in-up">
-                        <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-5 h-5 text-mediloon-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
                         <span className="text-sm font-bold text-gray-800">{cartCount} {cartCount !== 1 ? t('items') : t('item')}</span>
@@ -223,8 +223,8 @@ export default function LiveOverlay({
                                 <div className={`
                                     max-w-[80%] rounded-2xl px-6 py-4 text-lg shadow-sm backdrop-blur-sm
                                     ${msg.isUser
-                                        ? 'bg-red-500/90 text-white rounded-br-none'
-                                        : 'bg-white/90 text-gray-800 border border-gray-200 rounded-bl-none'
+                                        ? 'bg-[#3270FC]/90 text-white rounded-br-none'
+                                        : 'bg-[#F4F7FB]/90 text-gray-800 border border-[#E2E8F0] rounded-bl-none'
                                     }
                                 `} dir="auto">
                                     {msg.text}
@@ -251,7 +251,7 @@ export default function LiveOverlay({
                                         </span>
                                     )}
                                     <span className="font-medium" dir="auto">{transcript}</span>
-                                    <span className="inline-block w-1 h-5 ml-1 bg-red-400 rounded-full animate-pulse align-middle"></span>
+                                    <span className="inline-block w-1 h-5 ml-1 bg-mediloon-400 rounded-full animate-pulse align-middle"></span>
                                 </div>
                             </div>
                         )}
@@ -267,19 +267,19 @@ export default function LiveOverlay({
                                 <button
                                     key={med.id || i}
                                     onClick={() => onSelectCandidate && onSelectCandidate(med)}
-                                    className="flex-shrink-0 flex flex-col items-start bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl px-4 py-3 shadow-lg hover:border-red-300 hover:bg-red-50/50 active:scale-95 transition-all"
+                                    className="flex-shrink-0 flex flex-col items-start bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl px-4 py-3 shadow-lg hover:border-[#B3CFFF] hover:bg-[#EEF4FF]/70 active:scale-95 transition-all"
                                     style={{ minWidth: '150px', maxWidth: '180px', animationDelay: `${i * 60}ms` }}
                                 >
                                     <div className="flex items-center gap-1.5 mb-1 w-full">
                                         <span className="font-bold text-gray-800 text-sm leading-tight truncate flex-1">{med.brand_name}</span>
                                         {med.rx_required ? (
-                                            <span className="text-[9px] font-bold bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full flex-shrink-0">RX</span>
+                                            <span className="text-[9px] font-bold bg-mediloon-100 text-mediloon-600 px-1.5 py-0.5 rounded-full flex-shrink-0">RX</span>
                                         ) : (
                                             <span className="text-[9px] font-bold bg-green-100 text-green-600 px-1.5 py-0.5 rounded-full flex-shrink-0">OTC</span>
                                         )}
                                     </div>
                                     <p className="text-xs text-gray-500 leading-tight">{med.dosage}</p>
-                                    <div className="mt-2 flex items-center gap-1 text-red-500 text-xs font-semibold">
+                                    <div className="mt-2 flex items-center gap-1 text-mediloon-500 text-xs font-semibold">
                                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
                                         </svg>
@@ -303,7 +303,7 @@ export default function LiveOverlay({
                         />
                         <button
                             onClick={() => fileInputRef.current?.click()}
-                            className="flex items-center gap-2 px-6 py-3 bg-white text-red-500 font-semibold rounded-full shadow-xl border border-red-100 hover:bg-red-50 transition-all transform hover:scale-105"
+                            className="flex items-center gap-2 px-6 py-3 bg-white text-mediloon-500 font-semibold rounded-full shadow-xl border border-mediloon-100 hover:bg-mediloon-50 transition-all transform hover:scale-105"
                         >
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -318,7 +318,7 @@ export default function LiveOverlay({
                     {/* Exit Button */}
                     <button
                         onClick={onClose}
-                        className="absolute -right-20 top-1/2 -translate-y-1/2 p-3 rounded-full bg-gray-100 text-gray-500 hover:bg-white hover:text-red-500 hover:shadow-lg transition-all"
+                        className="absolute -right-20 top-1/2 -translate-y-1/2 p-3 rounded-full bg-gray-100 text-gray-500 hover:bg-white hover:text-mediloon-500 hover:shadow-lg transition-all"
                         title={t('exitVoiceMode')}
                     >
                         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -326,78 +326,66 @@ export default function LiveOverlay({
                         </svg>
                     </button>
 
-                    {/* The Voice-Reactive Sphere Container */}
-                    <div
-                        className="relative w-36 h-36 flex items-center justify-center"
-                        style={{
-                            transform: `scale(${sphereStyles.scale})`,
-                            transition: 'transform 0.08s ease-out'
-                        }}
-                    >
-                        {/* Outer Glow Ring */}
-                        <div
-                            className="absolute inset-0 rounded-full bg-gradient-to-br from-red-400/30 to-rose-500/30 blur-xl"
-                            style={{
-                                transform: `scale(${1.2 + audioLevel * 0.3})`,
-                                opacity: sphereStyles.glowOpacity,
-                                transition: 'all 0.1s ease-out'
-                            }}
-                        ></div>
+                    {/* Modern AI Voice Visualizer */}
+                    <div className="relative w-40 h-40 flex items-center justify-center">
 
-                        {/* Main Morphing Sphere */}
-                        <div
-                            className="absolute inset-2 bg-gradient-to-br from-red-500 via-rose-500 to-orange-400"
-                            style={{
-                                borderRadius: sphereStyles.borderRadius,
-                                filter: `blur(8px) drop-shadow(0 0 ${sphereStyles.glowSize}px rgba(220, 38, 38, ${sphereStyles.glowOpacity}))`,
-                                animation: `liquid-morph ${sphereStyles.animationDuration}s ease-in-out infinite`,
-                                transition: 'border-radius 0.1s ease-out, filter 0.1s ease-out'
-                            }}
-                        ></div>
+                        {/* Audio Reactive Outer Ripples (Only when listening) */}
+                        {isListening && (
+                            <>
+                                <div
+                                    className="absolute inset-0 rounded-full border-2 border-[#3270FC]/30"
+                                    style={{
+                                        transform: `scale(${1 + audioLevel * 1})`,
+                                        opacity: Math.max(0, 1 - audioLevel),
+                                        transition: 'all 0.1s ease-out'
+                                    }}
+                                ></div>
+                                <div
+                                    className="absolute inset-4 rounded-full bg-[#3270FC]/15"
+                                    style={{
+                                        transform: `scale(${1 + audioLevel * 0.5})`,
+                                        transition: 'transform 0.05s ease-out'
+                                    }}
+                                ></div>
+                            </>
+                        )}
 
-                        {/* Inner Bright Core */}
-                        <div
-                            className="absolute inset-6 bg-gradient-to-tr from-rose-400 via-orange-300 to-yellow-300"
-                            style={{
-                                borderRadius: sphereStyles.borderRadius,
-                                opacity: 0.7 + (audioLevel * 0.3),
-                                filter: 'blur(4px)',
-                                animation: `liquid-morph ${sphereStyles.animationDuration}s ease-in-out infinite reverse`,
-                                transition: 'all 0.1s ease-out'
-                            }}
-                        ></div>
+                        {/* Agent Speaking Glow - Soft pulsing aura */}
+                        {isSpeaking && (
+                            <div className="absolute inset-0 rounded-full bg-[#3270FC]/10 animate-pulse blur-xl"></div>
+                        )}
 
-                        {/* Center Highlight */}
+                        {/* Central Hub */}
                         <div
-                            className="absolute w-8 h-8 bg-white/80 rounded-full blur-md"
-                            style={{
-                                transform: `scale(${0.8 + audioLevel * 0.4})`,
-                                opacity: 0.6 + (audioLevel * 0.4),
-                                transition: 'all 0.1s ease-out'
-                            }}
-                        ></div>
-
-                        {/* Status Icon Overlay */}
-                        <div className="absolute inset-0 flex items-center justify-center z-10 text-white drop-shadow-lg">
+                            className={`absolute z-10 rounded-full flex items-center justify-center transition-all duration-300 shadow-xl overflow-hidden pointer-events-none
+                                ${isListening ? 'w-24 h-24 bg-[#3270FC]' : isSpeaking ? 'w-28 h-28 bg-white border border-[#E2E8F0]' : 'w-16 h-16 bg-white border border-gray-100'}
+                            `}
+                            style={isListening ? {
+                                transform: `scale(${1 + audioLevel * 0.15})`,
+                                boxShadow: `0 0 ${15 + audioLevel * 30}px rgba(50, 112, 252, 0.4)`
+                            } : {}}
+                        >
                             {isListening ? (
+                                /* User is speaking -> Solid blue circle with white Mic */
                                 <svg
-                                    className="w-10 h-10"
+                                    className="w-10 h-10 text-white drop-shadow-md"
                                     fill="none"
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
-                                    style={{
-                                        transform: `scale(${1 + audioLevel * 0.3})`,
-                                        transition: 'transform 0.1s ease-out'
-                                    }}
                                 >
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                                 </svg>
                             ) : isSpeaking ? (
-                                <svg className="w-10 h-10 animate-bounce-subtle" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                                </svg>
+                                /* Agent is speaking -> White circle with Blue Equalizer Bars */
+                                <div className="flex items-center justify-center gap-1.5 h-10">
+                                    <div className="w-1.5 bg-[#3270FC] rounded-full animate-voice-bar-1"></div>
+                                    <div className="w-1.5 bg-[#3270FC] rounded-full animate-voice-bar-2"></div>
+                                    <div className="w-1.5 bg-[#3270FC] rounded-full animate-voice-bar-3"></div>
+                                    <div className="w-1.5 bg-[#3270FC] rounded-full animate-voice-bar-4"></div>
+                                </div>
                             ) : (
-                                <div className="w-4 h-4 bg-white rounded-full animate-ping"></div>
+                                /* Processing/Idle */
+                                <div className="w-4 h-4 bg-[#3270FC] rounded-full animate-ping"></div>
                             )}
                         </div>
                     </div>
@@ -406,7 +394,7 @@ export default function LiveOverlay({
                     {isListening && (
                         <div className="mt-6 w-32 h-2 bg-gray-200/50 rounded-full overflow-hidden mx-auto">
                             <div
-                                className="h-full bg-gradient-to-r from-red-400 via-rose-500 to-orange-400 rounded-full"
+                                className="h-full bg-[#3270FC] rounded-full"
                                 style={{
                                     width: `${Math.max(5, audioLevel * 100)}%`,
                                     transition: 'width 0.05s ease-out'
@@ -418,7 +406,7 @@ export default function LiveOverlay({
                     <p className="text-center mt-4 font-medium text-gray-500">
                         {isListening ? (
                             <span className="flex items-center justify-center gap-2">
-                                <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                                <span className="w-2 h-2 bg-mediloon-500 rounded-full animate-pulse"></span>
                                 {t('listening')}
                             </span>
                         ) : isSpeaking ? t('speaking') : isLoading ? (
@@ -429,11 +417,11 @@ export default function LiveOverlay({
                         ) : (
                             <button
                                 onClick={() => onRetryListening?.()}
-                                className="group inline-flex items-center justify-center gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-full min-h-[44px] lg:min-h-[52px] min-w-[170px] lg:min-w-[210px] border border-red-200/70 bg-white/90 backdrop-blur-sm text-red-500 hover:text-red-600 hover:bg-red-50 hover:border-red-300 hover:shadow-md active:scale-[0.98] transition-all cursor-pointer"
+                                className="group inline-flex items-center justify-center gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-full min-h-[44px] lg:min-h-[52px] min-w-[170px] lg:min-w-[210px] border border-[#B3CFFF] bg-white/90 backdrop-blur-sm text-[#3270FC] hover:text-[#1D5CE8] hover:bg-[#EEF4FF] hover:border-[#80AAFF] hover:shadow-md active:scale-[0.98] transition-all cursor-pointer"
                             >
                                 <span className="relative inline-flex">
-                                    <span className="w-2.5 h-2.5 bg-red-400 rounded-full"></span>
-                                    <span className="absolute inset-0 bg-red-400 rounded-full animate-ping opacity-60"></span>
+                                    <span className="w-2.5 h-2.5 bg-[#5288FD] rounded-full"></span>
+                                    <span className="absolute inset-0 bg-[#5288FD] rounded-full animate-ping opacity-60"></span>
                                 </span>
                                 <span className="font-semibold tracking-[0.01em]">{t('tapToSpeak')}</span>
                             </button>
@@ -468,6 +456,14 @@ export default function LiveOverlay({
                     from { opacity: 0; transform: translateY(8px); }
                     to { opacity: 1; transform: translateY(0); }
                 }
+                @keyframes voice-bar {
+                    0%, 100% { height: 20%; opacity: 0.6; }
+                    50% { height: 100%; opacity: 1; }
+                }
+                .animate-voice-bar-1 { animation: voice-bar 1s ease-in-out infinite; height: 100%; }
+                .animate-voice-bar-2 { animation: voice-bar 1.2s ease-in-out infinite 0.2s; height: 100%; }
+                .animate-voice-bar-3 { animation: voice-bar 0.8s ease-in-out infinite 0.4s; height: 100%; }
+                .animate-voice-bar-4 { animation: voice-bar 1.1s ease-in-out infinite 0.1s; height: 100%; }
             `}</style>
         </div>
     );

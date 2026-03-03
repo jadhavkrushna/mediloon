@@ -25,6 +25,7 @@ import { useRefillPredictions } from './hooks/useRefillPredictions';
 import { useLanguage } from './i18n/LanguageContext';
 import LanguageSelector from './components/LanguageSelector';
 import { useUI } from './contexts/UIContext';
+import { FiMic } from 'react-icons/fi';
 
 const API_BASE = '/api';
 const CHAT_TIMEOUT_MS = 60000;
@@ -855,18 +856,22 @@ export default function App() {
                ═══════════════════════════════════ */}
             <header className={`sticky top-0 z-40 transition-all duration-300 ${liveMode ? 'opacity-0 -translate-y-full' : 'opacity-100'}`}>
                 {/* Red accent line */}
-                <div className="h-1 bg-gradient-to-r from-mediloon-500 via-mediloon-600 to-mediloon-500" />
-                <div className="bg-white/90 backdrop-blur-xl border-b border-surface-fog/50">
-                    <div className="max-w-[95rem] mx-auto px-3 md:px-5 h-14 md:h-16 flex items-center justify-between">
-                        {/* Logo */}
-                        <img
-                            src="/mediloon-logo.webp"
-                            alt="Mediloon Logo"
-                            className="w-32 h-32 md:w-40 md:h-40 object-contain ml-1 md:ml-2 pointer-events-none"
-                        />
+                <div className="h-[3px] bg-gradient-to-r from-mediloon-400 via-mediloon-600 to-mediloon-400" />
+                <div className="bg-white/95 backdrop-blur-xl border-b border-surface-fog/70 shadow-sm">
+                    <div className="max-w-[98rem] mx-auto px-4 md:px-6 h-14 md:h-16 flex items-center justify-between gap-4">
 
-                        {/* Nav Actions */}
+                        {/* ── Left: Logo ── */}
+                        <div className="flex items-center flex-shrink-0">
+                            <img
+                                src="/mediloon-logo.webp"
+                                alt="Mediloon Logo"
+                                className="h-10 md:h-11 w-auto object-contain pointer-events-none"
+                            />
+                        </div>
+
+                        {/* ── Right: Nav Actions ── */}
                         <div className="flex items-center gap-1 md:gap-2">
+
                             {/* Language Selector */}
                             <LanguageSelector />
 
@@ -876,7 +881,9 @@ export default function App() {
                                 className="p-2.5 text-ink-muted hover:text-mediloon-600 hover:bg-mediloon-50 rounded-xl transition-all duration-200 active:scale-95"
                                 title={t('searchMedicines')}
                             >
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
                             </button>
 
                             {/* Voice Settings */}
@@ -885,30 +892,47 @@ export default function App() {
                                 className="p-2.5 text-ink-muted hover:text-mediloon-600 hover:bg-mediloon-50 rounded-xl transition-all duration-200 active:scale-95"
                                 title={t('voiceSettings')}
                             >
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                             </button>
 
-                            {/* Admin Toggle */}
+                            {/* Admin / User Toggle */}
                             <div className="hidden md:flex bg-surface-cloud rounded-full p-1 border border-surface-fog">
-                                <button onClick={() => setViewMode('user')} className={`px-4 py-1.5 rounded-full text-xs font-brand font-semibold transition-all duration-200 ${viewMode === 'user' ? 'bg-white shadow-sm text-ink-primary' : 'text-ink-muted hover:text-ink-primary'}`}>{t('user')}</button>
-                                <button onClick={() => setViewMode('admin')} className={`px-4 py-1.5 rounded-full text-xs font-brand font-semibold transition-all duration-200 ${viewMode === 'admin' ? 'bg-white shadow-sm text-ink-primary' : 'text-ink-muted hover:text-ink-primary'}`}>{t('admin')}</button>
+                                <button
+                                    onClick={() => setViewMode('user')}
+                                    className={`px-3.5 py-1.5 rounded-full text-xs font-brand font-semibold transition-all duration-200 ${viewMode === 'user' ? 'bg-white shadow-sm text-ink-primary' : 'text-ink-muted hover:text-ink-primary'}`}
+                                >{t('user')}</button>
+                                <button
+                                    onClick={() => setViewMode('admin')}
+                                    className={`px-3.5 py-1.5 rounded-full text-xs font-brand font-semibold transition-all duration-200 ${viewMode === 'admin' ? 'bg-white shadow-sm text-ink-primary' : 'text-ink-muted hover:text-ink-primary'}`}
+                                >{t('admin')}</button>
                             </div>
 
-                            {/* Auth Section */}
-                            {user ? (
-                                <div className="flex items-center gap-2 pl-3 ml-1 border-l border-surface-fog">
-                                    <button onClick={() => setShowProfileModal(true)} className="p-2 text-ink-muted hover:text-mediloon-600 hover:bg-mediloon-50 rounded-xl transition-all duration-200" title={t('editProfile')}>
-                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                                    </button>
-                                    <span className="text-sm font-brand font-semibold text-ink-secondary hidden sm:block">{user.name.split(' ')[0]}</span>
-                                    <button onClick={handleLogout} className="text-xs font-brand font-semibold text-mediloon-500 hover:text-mediloon-700 hover:underline ml-1 transition-colors">{t('logout')}</button>
-                                </div>
-                            ) : (
-                                <button onClick={() => setShowLogin(true)} className="btn-primary ml-1 md:ml-2 text-xs md:text-sm py-1.5 px-3 md:py-2 md:px-5">{t('signIn')}</button>
-                            )}
+                            {/* Auth — divider + user or sign-in */}
+                            <div className="flex items-center gap-2 pl-3 border-l border-surface-fog ml-1">
+                                {user ? (
+                                    <>
+                                        <button
+                                            onClick={() => setShowProfileModal(true)}
+                                            className="p-2 text-ink-muted hover:text-mediloon-600 hover:bg-mediloon-50 rounded-xl transition-all duration-200"
+                                            title={t('editProfile')}
+                                        >
+                                            <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                        </button>
+                                        <span className="text-sm font-brand font-semibold text-ink-secondary hidden sm:block">{user.name.split(' ')[0]}</span>
+                                        <button onClick={handleLogout} className="text-xs font-brand font-semibold text-mediloon-500 hover:text-mediloon-700 hover:underline transition-colors">{t('logout')}</button>
+                                    </>
+                                ) : (
+                                    <button
+                                        onClick={() => setShowLogin(true)}
+                                        className="btn-primary text-xs md:text-sm py-2 px-4 md:px-5"
+                                    >{t('signIn')}</button>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -977,28 +1001,40 @@ export default function App() {
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                        <div className="glass-card flex flex-col items-center text-center p-5 hover-lift hover:border-red-200 hover:shadow-lg transition-all duration-300 animate-fade-in-up group" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
-                                            <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center shadow-inner mb-3 group-hover:bg-red-500 group-hover:text-white transition-colors duration-300">
-                                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+                                        {/* Card 1: Voice Ordering */}
+                                        <div
+                                            className="bg-white border border-slate-100 rounded-2xl flex flex-col items-center text-center p-5 shadow-sm transition-all duration-300 animate-fade-in-up group cursor-default hover:-translate-y-1 hover:shadow-md hover:border-red-200"
+                                            style={{ animationDelay: '0.2s', animationFillMode: 'both' }}
+                                        >
+                                            <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center mb-3 group-hover:bg-red-500 group-hover:text-white transition-all duration-300">
+                                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
                                             </div>
-                                            <h4 className="text-gray-800 font-brand font-bold text-lg mb-1.5 tracking-tight">Voice Ordering</h4>
-                                            <p className="text-gray-500 text-[13px] font-body leading-snug">Just speak naturally — our AI understands medicines in any language</p>
+                                            <h4 className="text-slate-800 font-brand font-bold text-base mb-1.5 tracking-tight">Voice Ordering</h4>
+                                            <p className="text-slate-500 text-[13px] font-body leading-relaxed">Just speak naturally — our AI understands medicines in any language</p>
                                         </div>
 
-                                        <div className="glass-card flex flex-col items-center text-center p-5 hover-lift hover:border-blue-200 hover:shadow-lg transition-all duration-300 animate-fade-in-up group" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
-                                            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center shadow-inner mb-3 group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300">
-                                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                        {/* Card 2: Smart Refills */}
+                                        <div
+                                            className="bg-white border border-slate-100 rounded-2xl flex flex-col items-center text-center p-5 shadow-sm transition-all duration-300 animate-fade-in-up group cursor-default hover:-translate-y-1 hover:shadow-md hover:border-blue-200"
+                                            style={{ animationDelay: '0.3s', animationFillMode: 'both' }}
+                                        >
+                                            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center mb-3 group-hover:bg-blue-500 group-hover:text-white transition-all duration-300">
+                                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                                             </div>
-                                            <h4 className="text-gray-800 font-brand font-bold text-lg mb-1.5 tracking-tight">Smart Refills</h4>
-                                            <p className="text-gray-500 text-[13px] font-body leading-snug">AI predicts when you'll run out and reminds you to reorder</p>
+                                            <h4 className="text-slate-800 font-brand font-bold text-base mb-1.5 tracking-tight">Smart Refills</h4>
+                                            <p className="text-slate-500 text-[13px] font-body leading-relaxed">AI predicts when you'll run out and reminds you before you run low</p>
                                         </div>
 
-                                        <div className="glass-card flex flex-col items-center text-center p-5 hover-lift hover:border-emerald-200 hover:shadow-lg transition-all duration-300 animate-fade-in-up group" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
-                                            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center shadow-inner mb-3 group-hover:bg-emerald-500 group-hover:text-white transition-colors duration-300">
-                                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                        {/* Card 3: Prescription OCR */}
+                                        <div
+                                            className="bg-white border border-slate-100 rounded-2xl flex flex-col items-center text-center p-5 shadow-sm transition-all duration-300 animate-fade-in-up group cursor-default hover:-translate-y-1 hover:shadow-md hover:border-emerald-200"
+                                            style={{ animationDelay: '0.4s', animationFillMode: 'both' }}
+                                        >
+                                            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center mb-3 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300">
+                                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                             </div>
-                                            <h4 className="text-gray-800 font-brand font-bold text-lg mb-1.5 tracking-tight">Prescription OCR</h4>
-                                            <p className="text-gray-500 text-[13px] font-body leading-snug">Snap a photo of your prescription and we'll handle the rest</p>
+                                            <h4 className="text-slate-800 font-brand font-bold text-base mb-1.5 tracking-tight">Prescription OCR</h4>
+                                            <p className="text-slate-500 text-[13px] font-body leading-relaxed">Snap a photo of your prescription and we'll handle the rest</p>
                                         </div>
                                     </div>
                                 </div>
@@ -1011,9 +1047,9 @@ export default function App() {
                         </div>
 
                         {/* Input Area */}
-                        <div className="p-2 md:p-4 bg-white/80 backdrop-blur-sm border-t border-surface-fog/50">
+                        <div className="p-3 md:p-4 bg-white/80 backdrop-blur-sm border-t border-surface-fog/50">
                             {candidates.length > 0 && (
-                                <div className="mb-4">
+                                <div className="mb-3">
                                     <ResultsList
                                         candidates={candidates}
                                         onSelect={(med) => { setSelectedMedId(med.id); handleDirectAddToCart(med); }}
@@ -1022,46 +1058,31 @@ export default function App() {
                                     />
                                 </div>
                             )}
-                            <div className="flex items-center gap-3">
-                                {/* ★ Unique Voice Mode Button — Mic with waveform bars */}
-                                <button
-                                    onClick={toggleLiveMode}
-                                    disabled={isLoading}
-                                    className={`relative flex-shrink-0 group p-2 -m-2 lg:p-3 lg:-m-3 rounded-[1.4rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mediloon-300 focus-visible:ring-offset-2 transition-all duration-300 ${liveMode ? 'scale-110' : 'hover:scale-105'}`}
-                                    title={t('enterVoiceMode')}
-                                >
-                                    {/* Glow rings */}
-                                    <div className={`absolute inset-0 rounded-2xl bg-mediloon-500/15 transition-all duration-500 ${liveMode ? 'scale-[1.8] animate-ping opacity-30' : 'scale-125 opacity-0 group-hover:opacity-40 group-hover:scale-[1.6]'}`} />
-
-                                    {/* Button body — pill with mic + waveform */}
-                                    <div className={`relative h-12 px-3 lg:h-14 lg:px-4 rounded-2xl flex items-center gap-2.5 shadow-lg transition-all duration-300 ${liveMode
-                                        ? 'bg-gradient-to-r from-mediloon-600 to-mediloon-700 shadow-mediloon-300 shadow-xl'
-                                        : 'bg-gradient-to-r from-mediloon-500 to-mediloon-600 shadow-mediloon-200 group-hover:shadow-xl group-hover:shadow-mediloon-300'}`}>
-                                        {/* Mic icon */}
-                                        <svg className="w-5 h-5 text-white flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                                        </svg>
-
-                                        {/* Animated waveform bars */}
-                                        <div className="flex items-center gap-[2px] h-6">
-                                            {[0.6, 1, 0.4, 0.8, 0.5, 0.9, 0.3].map((h, i) => (
-                                                <div key={i}
-                                                    className={`w-[3px] rounded-full bg-white/80 transition-all duration-300 ${liveMode ? 'animate-bounce' : ''}`}
-                                                    style={{
-                                                        height: `${h * 100}%`,
-                                                        animationDelay: `${i * 80}ms`,
-                                                        animationDuration: liveMode ? '0.5s' : '1s',
-                                                        ...(liveMode ? {} : { animation: `waveIdle ${0.8 + i * 0.15}s ease-in-out infinite alternate`, animationDelay: `${i * 0.1}s` })
-                                                    }}
-                                                />
-                                            ))}
-                                        </div>
-                                    </div>
-                                </button>
-                                <div className="flex-1 min-w-0">
-                                    <TextInput onSend={handleSend} onUpload={handleFileUpload} disabled={isLoading} placeholder={t('typeMessage')} />
-                                </div>
-                            </div>
+                            {/* Unified input bar: attach(left) | text | mic(right) */}
+                            <TextInput
+                                onSend={handleSend}
+                                onUpload={handleFileUpload}
+                                disabled={isLoading}
+                                placeholder={t('typeMessage')}
+                                leftSlot={
+                                    <button
+                                        type="button"
+                                        onClick={toggleLiveMode}
+                                        disabled={isLoading}
+                                        title={liveMode ? t('stopVoiceMode') : t('enterVoiceMode')}
+                                        className={`relative flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mediloon-300 focus-visible:ring-offset-1
+                                            ${liveMode
+                                                ? 'bg-gradient-to-br from-mediloon-600 to-mediloon-700 shadow-lg shadow-mediloon-300/40 scale-110'
+                                                : 'bg-gradient-to-br from-mediloon-500 to-mediloon-600 hover:scale-105 hover:shadow-md hover:shadow-mediloon-200/60'
+                                            }`}
+                                    >
+                                        {liveMode && (
+                                            <span className="absolute inset-0 rounded-full bg-mediloon-400/30 animate-ping" />
+                                        )}
+                                        <FiMic className="w-4 h-4 text-white relative z-10" />
+                                    </button>
+                                }
+                            />
                         </div>
                     </div>
                 </section>
@@ -1093,9 +1114,9 @@ export default function App() {
                     {!user && (
                         <button
                             onClick={() => setShowLogin(true)}
-                            className="w-full flex items-center gap-3 p-3.5 bg-white border border-surface-fog rounded-2xl shadow-sm hover:shadow-md hover:border-mediloon-200 transition-all duration-200 group"
+                            className="w-full flex items-center gap-3 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md hover:border-mediloon-200 transition-all duration-200 group"
                         >
-                            <div className="w-9 h-9 bg-mediloon-50 rounded-xl flex items-center justify-center group-hover:bg-mediloon-100 transition-colors">
+                            <div className="w-10 h-10 bg-mediloon-50 rounded-xl flex items-center justify-center group-hover:bg-mediloon-100 transition-colors flex-shrink-0">
                                 <svg className="w-5 h-5 text-mediloon-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             </div>
                             <div className="text-left">
@@ -1118,9 +1139,9 @@ export default function App() {
                         />
                     </div>
 
-                    {/* Updates & Insights */}
+                    {/* Updates & Insights — uniform card */}
                     {user && (
-                        <div className="mt-auto glass-card-solid p-4 border border-mediloon-100 animate-fade-in-up hover:shadow-lift transition-all duration-300">
+                        <div className="flex-shrink-0 bg-white border border-slate-100 rounded-2xl shadow-sm p-4 animate-fade-in-up hover:shadow-md transition-all duration-300">
                             <div className="flex items-center justify-between mb-3">
                                 <h3 className="font-brand font-bold text-ink-primary flex items-center gap-2 text-sm">
                                     <span className="relative flex h-3 w-3">
@@ -1130,7 +1151,7 @@ export default function App() {
                                     {t('updatesInsights')}
                                 </h3>
                             </div>
-                            <div className="bg-surface-snow rounded-2xl p-1">
+                            <div className="bg-slate-50 rounded-xl p-1">
                                 <UpdatesModal
                                     alerts={refillAlerts}
                                     timeline={refillTimeline}

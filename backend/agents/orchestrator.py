@@ -949,18 +949,19 @@ async def process_message(
         try:
             from services.user_intelligence_service import get_user_refill_patterns
             from db.database import execute_query
-            
-            c_id = state.get("customer_id") or 2
-            
-            # Fetch user name for personalized greetings
-            user_res = await execute_query("SELECT name FROM customers WHERE id = ?", (c_id,))
-            if user_res and user_res[0].get("name"):
-                state["customer_name"] = user_res[0]["name"]
-                
-            insights = await get_user_refill_patterns(c_id)
-            if insights:
-                state["user_insights"] = insights
-                log_trace(session_id, "user_insights", insights)
+
+            c_id = state.get("customer_id")  # Only use real customer_id — no hardcoded fallback
+
+            # Fetch user name for personalized greetings (only when logged in)
+            if c_id:
+                user_res = await execute_query("SELECT name FROM customers WHERE id = ?", (c_id,))
+                if user_res and user_res[0].get("name"):
+                    state["customer_name"] = user_res[0]["name"]
+
+                insights = await get_user_refill_patterns(c_id)
+                if insights:
+                    state["user_insights"] = insights
+                    log_trace(session_id, "user_insights", insights)
         except Exception as e:
             print(f"Error fetching user profile/insights: {e}")
 
