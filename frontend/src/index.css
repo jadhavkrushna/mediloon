@@ -16,6 +16,8 @@
         scroll-behavior: smooth;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        /* Increase base font size from default 16px to 18px to globally scale up all rem-based sizing (text, padding, icons) */
+        font-size: 112.5%;
     }
 
     body {
@@ -448,4 +450,177 @@
 /* Selection highlight */
 .selection\:bg-mediloon-100 *::selection {
     background-color: #DDEAFF !important;
+}
+
+/* ============================================
+   DARK MODE OVERRIDES
+   Applied when <html class="dark"> is set
+   ============================================ */
+
+/* Base surfaces */
+.dark body,
+.dark .bg-surface-snow {
+    background-color: #0f1117 !important;
+}
+
+.dark .bg-white,
+.dark .bg-white\/80,
+.dark .bg-white\/95 {
+    background-color: #1a1d27 !important;
+}
+
+.dark .bg-surface-cloud,
+.dark .bg-gray-50,
+.dark .bg-gray-50\/50,
+.dark .bg-gray-100 {
+    background-color: #1f2233 !important;
+}
+
+/* Text */
+.dark .text-ink-primary {
+    color: #f1f5ff !important;
+}
+
+.dark .text-ink-secondary {
+    color: #c4c9d8 !important;
+}
+
+.dark .text-ink-muted,
+.dark .text-gray-500,
+.dark .text-\[\#67748e\] {
+    color: #8a94b0 !important;
+}
+
+.dark .text-gray-800,
+.dark .text-\[\#344767\] {
+    color: #e1e7f5 !important;
+}
+
+.dark .text-gray-400 {
+    color: #6b74a0 !important;
+}
+
+.dark .text-gray-600 {
+    color: #9aa3bf !important;
+}
+
+/* Borders */
+.dark .border-surface-fog,
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .border-\[\#d2d6da\],
+.dark .border-\[\#f0f2f5\] {
+    border-color: #2d3248 !important;
+}
+
+.dark .divide-gray-100\/50>*+* {
+    border-color: #252840 !important;
+}
+
+.dark .divide-gray-50>*+* {
+    border-color: #252840 !important;
+}
+
+/* Header */
+.dark header .bg-white\/95 {
+    background-color: rgba(26, 29, 39, 0.95) !important;
+}
+
+.dark header .border-b {
+    border-color: #2d3248 !important;
+}
+
+/* Cards */
+.dark .shadow-soft-ui {
+    box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.4) !important;
+}
+
+.dark .glass-card {
+    background-color: rgba(26, 29, 39, 0.9) !important;
+}
+
+.dark .feature-card {
+    background-color: #1a1d27 !important;
+    border-color: #2d3248 !important;
+}
+
+/* Buttons */
+.dark .bg-surface-cloud {
+    background-color: #1f2233 !important;
+}
+
+.dark .btn-secondary {
+    background-color: #1f2233 !important;
+    color: #88b8ff !important;
+}
+
+/* Inputs */
+.dark input,
+.dark textarea,
+.dark select {
+    background-color: #1a1d27 !important;
+    color: #e1e7f5 !important;
+    border-color: #2d3248 !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: #6b74a0 !important;
+}
+
+/* Chat messages */
+.dark .chat-float {
+    background: #1a1d27 !important;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Scrollbar in dark mode */
+.dark ::-webkit-scrollbar-thumb {
+    background-color: #3d4468 !important;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background-color: #5e6a9e !important;
+}
+
+/* Admin sidebar dark */
+.dark aside.w-64,
+.dark aside[class*="w-64"] {
+    background-color: #1a1d27 !important;
+}
+
+/* Admin dashboard body */
+.dark [style*="background: #f8f9fa"],
+.dark [style*="background-color: #f8f9fa"],
+.dark [style*="backgroundColor: '#f8f9fa'"] {
+    background-color: #0f1117 !important;
+}
+
+/* ── Icon visibility fixes in dark mode ── */
+/* Rest state: keep icons a readable grey-blue */
+.dark header button {
+    color: #a0aec9;
+}
+
+/* Hover: use a dark card bg + brighter icon instead of washed-out light-blue */
+.dark header button:hover {
+    background-color: #2d3248 !important;
+    color: #c8d3f0 !important;
+}
+
+/* Override mediloon-50 hover bg (near-white) with dark variant */
+.dark .hover\:bg-mediloon-50:hover {
+    background-color: #2d3248 !important;
+}
+
+.dark .hover\:text-mediloon-600:hover {
+    color: #88b8ff !important;
+}
+
+/* Sidebar / general icon buttons in dark */
+.dark button.p-2\.5:hover,
+.dark button.p-2:hover,
+.dark button.p-3:hover {
+    background-color: #252840 !important;
+    color: #d0d8f0 !important;
 }

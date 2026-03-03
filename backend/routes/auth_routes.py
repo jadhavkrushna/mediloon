@@ -71,6 +71,7 @@ class UserResponse(BaseModel):
     country: Optional[str] = None
     notification_enabled: bool = True
     profile_completed: bool = False
+    is_admin: bool = False
 
 
 class AuthResponse(BaseModel):
@@ -139,7 +140,7 @@ async def get_user_by_token(session_token: str = None, authorization: Optional[s
 
     # Fetch user from DB
     result = await execute_query("""
-        SELECT id, name, email, phone, age, gender, address, city, state, postal_code, country, notification_enabled, profile_completed
+        SELECT id, name, email, phone, age, gender, address, city, state, postal_code, country, notification_enabled, profile_completed, COALESCE(is_admin, 0) as is_admin
         FROM customers
         WHERE id = ?
     """, (user_id,))
@@ -210,7 +211,7 @@ async def login(request: LoginRequest):
     
     # Find user
     result = await execute_query("""
-        SELECT id, name, email, phone, age, gender, address, city, state, postal_code, country, notification_enabled, profile_completed
+        SELECT id, name, email, phone, age, gender, address, city, state, postal_code, country, notification_enabled, profile_completed, COALESCE(is_admin, 0) as is_admin
         FROM customers
         WHERE email = ? AND password_hash = ?
     """, (request.email.lower(), password_hash))
@@ -244,6 +245,7 @@ async def login(request: LoginRequest):
             country=user.get('country'),
             notification_enabled=bool(user['notification_enabled']),
             profile_completed=bool(user.get('profile_completed', False)),
+            is_admin=bool(user.get('is_admin', False)),
         ),
         session_token=session_token,
         message="Login successful",
@@ -266,13 +268,28 @@ async def logout(session_token: Optional[str] = None, authorization: Optional[st
     return {"status": "logged_out", "message": "Successfully logged out"}
 
 
-@router.get("/me", response_model=UserResponse)
+@router.get("/me")
 async def get_profile(user: dict = Depends(get_user_by_token)):
     """Get current user profile."""
     if not user:
         raise HTTPException(status_code=401, detail="Invalid or expired session")
     
-    return UserResponse(**user)
+    return UserResponse(
+        id=user['id'],
+        name=user['name'],
+        email=user['email'],
+        phone=user.get('phone'),
+        age=user.get('age'),
+        gender=user.get('gender'),
+        address=user.get('address'),
+        city=user.get('city'),
+        state=user.get('state'),
+        postal_code=user.get('postal_code'),
+        country=user.get('country'),
+        notification_enabled=bool(user.get('notification_enabled', True)),
+        profile_completed=bool(user.get('profile_completed', False)),
+        is_admin=bool(user.get('is_admin', False)),
+    )
 
 
 @router.put("/me", response_model=UserResponse)

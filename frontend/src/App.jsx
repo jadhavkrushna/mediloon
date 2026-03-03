@@ -25,6 +25,7 @@ import { useRefillPredictions } from './hooks/useRefillPredictions';
 import { useLanguage } from './i18n/LanguageContext';
 import LanguageSelector from './components/LanguageSelector';
 import { useUI } from './contexts/UIContext';
+import { useTheme } from './contexts/ThemeContext';
 import { FiMic } from 'react-icons/fi';
 
 const API_BASE = '/api';
@@ -175,6 +176,7 @@ function FeatureCards() {
 export default function App() {
     // --- Language ---
     const { t, lang, bcp47, dir, setLang } = useLanguage();
+    const { isDark, toggleTheme } = useTheme();
 
     // --- UI Context (agent-controlled navigation) ---
     const { executeUIAction, isCartOpen, setCartOpen, isOrdersOpen, setOrdersOpen, isPrescriptionModalOpen, setPrescriptionModalOpen, prescriptionMode, isTraceOpen, setTraceOpen, modalEpoch } = useUI();
@@ -671,6 +673,7 @@ export default function App() {
         }
         localStorage.removeItem('session_token');
         setUser(null); setSessionToken(null); setOrderUpdates([]);
+        setViewMode('user'); // always reset to user view on logout
     };
 
     // Direct add-to-cart via API (bypasses LLM for reliability)
@@ -841,6 +844,7 @@ export default function App() {
     }, [sessionId]);
 
     // --- Render ---
+    // Admin view toggle (auth removed)
     if (viewMode === 'admin') {
         return <AdminDashboard user={user} onSwitchToUser={() => setViewMode('user')} />;
     }
@@ -854,7 +858,7 @@ export default function App() {
             {/* ═══════════════════════════════════
                 1. HEADER — Glassmorphic with red accent
                ═══════════════════════════════════ */}
-            <header className={`sticky top-0 z-40 transition-all duration-300 ${liveMode ? 'opacity-0 -translate-y-full' : 'opacity-100'}`}>
+            <header className="sticky top-0 z-40 transition-all duration-300">
                 {/* Red accent line */}
                 <div className="h-[3px] bg-gradient-to-r from-mediloon-400 via-mediloon-600 to-mediloon-400" />
                 <div className="bg-white/95 backdrop-blur-xl border-b border-surface-fog/70 shadow-sm">
@@ -872,33 +876,11 @@ export default function App() {
                         {/* ── Right: Nav Actions ── */}
                         <div className="flex items-center gap-1 md:gap-2">
 
+
                             {/* Language Selector */}
                             <LanguageSelector />
 
-                            {/* Search */}
-                            <button
-                                onClick={() => setShowSearch(true)}
-                                className="p-2.5 text-ink-muted hover:text-mediloon-600 hover:bg-mediloon-50 rounded-xl transition-all duration-200 active:scale-95"
-                                title={t('searchMedicines')}
-                            >
-                                <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </button>
-
-                            {/* Voice Settings */}
-                            <button
-                                onClick={() => setShowVoiceSettings(true)}
-                                className="p-2.5 text-ink-muted hover:text-mediloon-600 hover:bg-mediloon-50 rounded-xl transition-all duration-200 active:scale-95"
-                                title={t('voiceSettings')}
-                            >
-                                <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </button>
-
-                            {/* Admin / User Toggle */}
+                            {/* Admin / User Toggle — Always shown */}
                             <div className="hidden md:flex bg-surface-cloud rounded-full p-1 border border-surface-fog">
                                 <button
                                     onClick={() => setViewMode('user')}
@@ -919,7 +901,7 @@ export default function App() {
                                             className="p-2 text-ink-muted hover:text-mediloon-600 hover:bg-mediloon-50 rounded-xl transition-all duration-200"
                                             title={t('editProfile')}
                                         >
-                                            <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <svg className="w-[22px] h-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
                                         </button>
@@ -941,7 +923,7 @@ export default function App() {
             {/* ═══════════════════════════════════
                 2. MAIN LAYOUT — 3 Column Grid
                ═══════════════════════════════════ */}
-            <main className={`max-w-[98rem] mx-auto w-full px-2 py-2 md:px-4 md:py-3 grid grid-cols-1 lg:grid-cols-[340px_1fr_380px] gap-3 md:gap-4 transition-all duration-500 h-[calc(100vh-[3.5rem])] md:h-[calc(100vh-[4rem])] lg:h-[calc(100vh-5.25rem)] overflow-y-auto lg:overflow-hidden ${liveMode && !isAnyModalOpen ? 'blur-md scale-95 opacity-50 pointer-events-none' : ''}`}>
+            <main className="max-w-[98rem] mx-auto w-full px-2 py-2 md:px-4 md:py-3 grid grid-cols-1 lg:grid-cols-[340px_1fr_380px] gap-3 md:gap-4 h-[calc(100vh-[3.5rem])] md:h-[calc(100vh-[4rem])] lg:h-[calc(100vh-5.25rem)] overflow-y-auto lg:overflow-hidden">
 
                 {/* ─── LEFT COLUMN: Trace ─── */}
                 <aside className={`flex flex-col gap-3 order-2 lg:order-1 lg:h-full`}>
@@ -1046,8 +1028,70 @@ export default function App() {
                             <div ref={messagesEndRef} />
                         </div>
 
+                        {/* ── Voice Status Banner ── */}
+                        {liveMode && (
+                            <div className={`mx-3 mb-2 rounded-2xl overflow-hidden transition-all duration-300 ${isLoading
+                                ? 'bg-mediloon-50 border border-mediloon-100'
+                                : isListening
+                                    ? 'bg-red-50 border border-red-100'
+                                    : 'bg-surface-cloud border border-surface-fog'
+                                }`}>
+                                <div className="flex items-center gap-3 px-4 py-2.5">
+                                    {/* Status icon */}
+                                    <div className="flex-shrink-0">
+                                        {isLoading ? (
+                                            <svg className="w-4 h-4 animate-spin text-mediloon-500" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                            </svg>
+                                        ) : isListening ? (
+                                            <span className="flex h-3 w-3 relative">
+                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                            </span>
+                                        ) : (
+                                            <span className="h-3 w-3 rounded-full bg-gray-300 inline-block"></span>
+                                        )}
+                                    </div>
+
+                                    {/* Status text + transcript */}
+                                    <div className="flex-1 min-w-0">
+                                        {isLoading ? (
+                                            <p className="text-xs font-semibold text-mediloon-600">Processing your request…</p>
+                                        ) : isListening ? (
+                                            <>
+                                                {!transcript && (
+                                                    <>
+                                                        <p className="text-xs font-bold text-red-600 leading-none mb-0.5">🎙 Listening — speak now</p>
+                                                        <p className="text-xs text-red-400">Say a medicine name or ask a question…</p>
+                                                    </>
+                                                )}
+                                                {transcript && (
+                                                    <p className="text-sm font-medium text-red-600 truncate italic">"{transcript}"</p>
+                                                )}
+                                            </>
+                                        ) : (
+                                            <p className="text-xs text-ink-muted">Mic is on — click 🎙 below to start speaking</p>
+                                        )}
+                                    </div>
+
+                                    {/* Stop button */}
+                                    <button
+                                        onClick={toggleLiveMode}
+                                        className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-red-200 text-red-500 text-xs font-bold shadow-sm hover:bg-red-50 active:scale-95 transition-all"
+                                        title="Stop voice mode"
+                                    >
+                                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                            <rect x="5" y="5" width="14" height="14" rx="2" />
+                                        </svg>
+                                        Stop
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Input Area */}
-                        <div className="p-3 md:p-4 bg-white/80 backdrop-blur-sm border-t border-surface-fog/50">
+                        <div className="p-3 md:p-4 bg-white/80 backdrop-blur-sm">
                             {candidates.length > 0 && (
                                 <div className="mb-3">
                                     <ResultsList
@@ -1063,30 +1107,76 @@ export default function App() {
                                 onSend={handleSend}
                                 onUpload={handleFileUpload}
                                 disabled={isLoading}
-                                placeholder={t('typeMessage')}
+                                placeholder={liveMode && isListening ? '🎙 Listening…' : t('typeMessage')}
                                 leftSlot={
                                     <button
                                         type="button"
                                         onClick={toggleLiveMode}
                                         disabled={isLoading}
-                                        title={liveMode ? t('stopVoiceMode') : t('enterVoiceMode')}
-                                        className={`relative flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mediloon-300 focus-visible:ring-offset-1
+                                        title={liveMode ? 'Stop voice mode' : 'Start voice mode'}
+                                        className={`relative flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mediloon-300 focus-visible:ring-offset-1
                                             ${liveMode
-                                                ? 'bg-gradient-to-br from-mediloon-600 to-mediloon-700 shadow-lg shadow-mediloon-300/40 scale-110'
+                                                ? 'bg-gradient-to-br from-red-500 to-red-600 shadow-lg shadow-red-300/40 scale-110'
                                                 : 'bg-gradient-to-br from-mediloon-500 to-mediloon-600 hover:scale-105 hover:shadow-md hover:shadow-mediloon-200/60'
                                             }`}
                                     >
-                                        {liveMode && (
-                                            <span className="absolute inset-0 rounded-full bg-mediloon-400/30 animate-ping" />
+                                        {liveMode && isListening && (
+                                            <span className="absolute inset-0 rounded-full bg-red-400/30 animate-ping" />
                                         )}
-                                        <FiMic className="w-4 h-4 text-white relative z-10" />
+                                        {liveMode ? (
+                                            /* Red stop square icon while active */
+                                            <svg className="w-5 h-5 text-white relative z-10" fill="currentColor" viewBox="0 0 24 24">
+                                                <rect x="5" y="5" width="14" height="14" rx="2" />
+                                            </svg>
+                                        ) : (
+                                            <FiMic className="w-5 h-5 text-white relative z-10" />
+                                        )}
                                     </button>
                                 }
                             />
                         </div>
+
                     </div>
                 </section>
 
+
+                {/* ─── SETTINGS FLOATING BAR (Bottom Left) ─── */}
+                <div className="fixed bottom-6 left-6 z-40 hidden md:flex flex-col gap-3">
+                    <div className="flex flex-col items-center gap-2 p-2 bg-white/80 backdrop-blur-xl border border-surface-fog shadow-glass rounded-full">
+                        {/* Theme Toggle */}
+                        <button
+                            onClick={toggleTheme}
+                            className="p-3 text-ink-muted hover:text-mediloon-600 hover:bg-mediloon-50 rounded-full transition-all duration-200 active:scale-95"
+                            title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                            aria-label="Toggle theme"
+                        >
+                            {isDark ? (
+                                <svg className="w-[22px] h-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 7a5 5 0 100 10A5 5 0 0012 7z" />
+                                </svg>
+                            ) : (
+                                <svg className="w-[22px] h-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                                </svg>
+                            )}
+                        </button>
+
+                        <div className="w-8 h-px bg-surface-fog" />
+
+                        {/* Voice Settings */}
+                        <button
+                            onClick={() => setShowVoiceSettings(true)}
+                            className="p-3 text-ink-muted hover:text-mediloon-600 hover:bg-mediloon-50 rounded-full transition-all duration-200 active:scale-95"
+                            title={t('voiceSettings')}
+                        >
+                            <svg className="w-[22px] h-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </button>
+                    </div>
+
+                </div>
 
                 {/* ─── RIGHT COLUMN: Cart, Updates, Past Orders ─── */}
                 <aside className={`flex flex-col gap-3 order-3 lg:h-full overflow-y-auto ${!user ? 'justify-start' : ''}  `}>
@@ -1183,31 +1273,7 @@ export default function App() {
                 3. OVERLAYS & MODALS
                ═══════════════════════════════════ */}
 
-            {/* Live Voice Overlay */}
-            <LiveOverlay
-                isOpen={liveMode}
-                onClose={toggleLiveMode}
-                isListening={isListening}
-                isSpeaking={isSpeaking}
-                isLoading={isLoading}
-                transcript={transcript}
-                messages={messages}
-                onUpload={handleFileUpload}
-                audioLevel={audioLevel}
-                cart={cart}
-                scriptInfo={scriptInfo}
-                candidates={candidates}
-                languageOptions={LANGUAGE_OPTIONS}
-                activeLanguage={manualLanguage || detectedLanguage}
-                onSelectLanguage={handleLanguageSelect}
-                isAnyModalOpen={isAnyModalOpen}
-                onRetryListening={startListening}
-                onSelectCandidate={(med) => {
-                    setSelectedMedId(med.id);
-                    handleDirectAddToCart(med);
-                    setCandidates([]);
-                }}
-            />
+            {/* Live Voice Overlay removed — mic now activates listening in the main chat */}
 
             {/* Voice Settings Modal */}
             <VoiceSettingsModal

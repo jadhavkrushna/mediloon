@@ -110,8 +110,8 @@ export default function TextInput({ onSend, onUpload, disabled, placeholder, lef
             <form onSubmit={handleSubmit} className="w-full">
                 {/* Unified pill container */}
                 <div className={`
-                    flex items-center w-full rounded-full border bg-white shadow-sm
-                    transition-all duration-200
+                    flex items-center w-full rounded-full border bg-white shadow-sm min-h-[56px]
+                    transition-all duration-200 py-1 pl-1 pr-1
                     ${disabled
                         ? 'border-surface-fog opacity-60'
                         : 'border-surface-fog hover:border-mediloon-200 focus-within:border-mediloon-400 focus-within:shadow-md focus-within:shadow-mediloon-100/50'
@@ -125,7 +125,7 @@ export default function TextInput({ onSend, onUpload, disabled, placeholder, lef
                         disabled={disabled || isUploading}
                         title="Attach file or take photo"
                         className={`
-                            flex-shrink-0 w-10 h-10 ml-1.5 rounded-full flex items-center justify-center gap-0.5
+                            flex-shrink-0 w-11 h-11 ml-0.5 rounded-full flex items-center justify-center gap-0.5
                             transition-all duration-200 active:scale-95
                             ${showUploadMenu
                                 ? 'bg-mediloon-50 text-mediloon-600'
@@ -135,10 +135,10 @@ export default function TextInput({ onSend, onUpload, disabled, placeholder, lef
                         `}
                     >
                         {isUploading ? (
-                            <FiLoader className="w-4 h-4 animate-spin" />
+                            <FiLoader className="w-5 h-5 animate-spin" />
                         ) : (
                             <FiPlus
-                                className={`w-5 h-5 transition-transform duration-200 ${showUploadMenu ? 'rotate-45' : ''}`}
+                                className={`w-6 h-6 transition-transform duration-200 ${showUploadMenu ? 'rotate-45' : ''}`}
                             />
                         )}
                     </button>
@@ -162,14 +162,14 @@ export default function TextInput({ onSend, onUpload, disabled, placeholder, lef
                     {canSend ? (
                         <button
                             type="submit"
-                            className="flex-shrink-0 w-10 h-10 mr-1.5 rounded-full flex items-center justify-center bg-mediloon-600 text-white shadow-sm hover:bg-mediloon-700 hover:shadow-md hover:-translate-y-px transition-all duration-200 active:scale-95"
+                            className="flex-shrink-0 w-11 h-11 mr-0.5 rounded-full flex items-center justify-center bg-mediloon-600 text-white shadow-sm hover:bg-mediloon-700 hover:shadow-md hover:-translate-y-px transition-all duration-200 active:scale-95"
                         >
-                            <FiSend className="w-4 h-4" />
+                            <FiSend className="w-5 h-5" />
                         </button>
                     ) : (
                         /* Mic/voice button slot from parent */
                         leftSlot ? (
-                            <div className="flex-shrink-0 mr-1.5">
+                            <div className="flex-shrink-0 mr-0.5">
                                 {leftSlot}
                             </div>
                         ) : null

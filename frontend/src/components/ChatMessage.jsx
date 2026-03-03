@@ -150,7 +150,7 @@ function MedicationListMessage({ pre, items, post, latency }) {
 function PlainMessage({ text, latency }) {
     return (
         <>
-            <p className="whitespace-pre-wrap text-[14px] font-body text-ink-primary leading-relaxed" dir="auto">
+            <p className="whitespace-pre-wrap text-[14px] font-body text-ink-primary dark:text-[#e1e7f5] leading-relaxed" dir="auto">
                 {text}
             </p>
             {latency != null && (
@@ -200,7 +200,7 @@ export default function ChatMessage({ message, isUser, isLoading, latency }) {
                     <div className="w-6 h-6 md:w-7 md:h-7 rounded-lg md:rounded-xl bg-mediloon-50 flex items-center justify-center flex-shrink-0 mt-0.5 border border-mediloon-200">
                         <span className="text-mediloon-600 font-brand font-bold text-[10px] md:text-xs">M</span>
                     </div>
-                    <div className="bg-[#F4F7FB] border border-[#E2E8F0] rounded-[1.2rem] md:rounded-2xl rounded-tl-md px-3 py-2 md:px-4 md:py-3 shadow-sm">
+                    <div className="bg-[#F4F7FB] dark:bg-[#1f2233] border border-[#E2E8F0] dark:border-[#2d3248] rounded-[1.2rem] md:rounded-2xl rounded-tl-md px-3 py-2 md:px-4 md:py-3 shadow-sm">
                         {parsed?.type === 'medication_list' ? (
                             <MedicationListMessage
                                 pre={parsed.pre}

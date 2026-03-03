@@ -206,6 +206,7 @@ CREATE TABLE IF NOT EXISTS customers (
 	notification_enabled BOOLEAN DEFAULT 1,
 	preferences_json TEXT,
 	profile_completed BOOLEAN DEFAULT 0,
+	is_admin INTEGER NOT NULL DEFAULT 0,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP
 );

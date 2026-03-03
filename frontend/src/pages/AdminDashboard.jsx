@@ -72,11 +72,11 @@ function MiniBar({ value, max, color = 'teal', showLabel = true }) {
 /* ─── Stat Card Component (Enhanced with Ring Visual) ─── */
 function StatCard({ icon, label, value, sub, color = 'teal', ringPct, ringMax }) {
   const colorMap = {
-    teal: { text: 'text-teal-600', ring: '#14B8A6', iconBg: 'bg-teal-100', glow: 'bg-teal-400' },
-    red: { text: 'text-red-600', ring: '#DC2626', iconBg: 'bg-red-100', glow: 'bg-red-400' },
-    amber: { text: 'text-amber-600', ring: '#F59E0B', iconBg: 'bg-amber-100', glow: 'bg-amber-400' },
-    blue: { text: 'text-blue-600', ring: '#3B82F6', iconBg: 'bg-blue-100', glow: 'bg-blue-400' },
-    purple: { text: 'text-purple-600', ring: '#8B5CF6', iconBg: 'bg-purple-100', glow: 'bg-purple-400' },
+    teal: { text: 'text-teal-600', ring: '#14B8A6', glow: 'from-blue-600 to-cyan-400' },
+    red: { text: 'text-red-500', ring: '#ef4444', glow: 'from-red-600 to-orange-400' },
+    amber: { text: 'text-amber-500', ring: '#f59e0b', glow: 'from-orange-500 to-yellow-400' },
+    blue: { text: 'text-blue-500', ring: '#3B82F6', glow: 'from-blue-600 to-indigo-400' },
+    purple: { text: 'text-purple-500', ring: '#8B5CF6', glow: 'from-purple-700 to-pink-500' },
   };
   const c = colorMap[color] || colorMap.teal;
   // Calculate percentage with safeguards against NaN
@@ -89,22 +89,25 @@ function StatCard({ icon, label, value, sub, color = 'teal', ringPct, ringMax })
   }
 
   return (
-    <div className="bg-white/80 backdrop-blur-xl rounded-[1.5rem] border border-white/60 p-5 shadow-[0_4px_10px_-2px_rgba(0,0,0,0.02),0_15px_25px_-5px_rgba(0,0,0,0.02)] hover:shadow-[0_10px_20px_-3px_rgba(0,0,0,0.04),0_25px_30px_-8px_rgba(0,0,0,0.04)] transition-all duration-400 ease-out hover:-translate-y-1.5 relative overflow-hidden group">
-      <div className={`absolute -right-8 -top-8 w-32 h-32 rounded-full blur-[40px] opacity-0 group-hover:opacity-15 transition-opacity duration-700 pointer-events-none ${c.glow}`} />
-      <div className="flex items-center gap-4 relative z-10">
-        {/* Ring or Icon */}
+    <div className="bg-white rounded-2xl p-4 shadow-soft-ui relative overflow-hidden flex flex-col h-full">
+      <div className="flex items-start justify-between relative z-10 w-full mb-2">
+        <div className="flex-1 min-w-0 pr-2">
+          <div className="text-xs font-bold uppercase tracking-wide text-[#67748e] mb-1">{label}</div>
+          {pct == null && <div className="text-xl font-bold text-[#344767]">{value}</div>}
+          {sub && <div className="text-sm font-medium text-[#67748e] mt-1 flex items-center gap-1">
+            {pct == null && <span className={c.text}>{sub.split(' ')[0]}</span>}
+            <span>{sub.substring(sub.indexOf(' ') + 1)}</span>
+          </div>}
+        </div>
         {pct != null ? (
-          <AdminRing pct={pct} size={52} strokeWidth={4.5} color={c.ring}>
+          <AdminRing pct={pct} size={48} strokeWidth={4} color={c.ring}>
             <span className={`text-sm font-bold ${c.text}`}>{typeof value === 'number' ? value : '—'}</span>
           </AdminRing>
         ) : (
-          <div className={`w-12 h-12 rounded-[1rem] ${c.iconBg} ${c.text} flex items-center justify-center shadow-inner`}>{icon}</div>
+          <div className={`w-12 h-12 rounded-xl bg-gradient-to-tl ${c.glow} text-white flex items-center justify-center flex-shrink-0 shadow-md`}>
+            {icon}
+          </div>
         )}
-        <div className="flex-1 min-w-0">
-          <div className={`text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5`}>{label}</div>
-          {pct == null && <div className={`text-[1.35rem] font-bold ${c.text}`}>{value}</div>}
-          {sub && <div className="text-[11px] font-medium text-gray-500 mt-0.5 truncate">{sub}</div>}
-        </div>
       </div>
     </div>
   );
@@ -113,21 +116,23 @@ function StatCard({ icon, label, value, sub, color = 'teal', ringPct, ringMax })
 /* ─── Collapsible Section Wrapper ─── */
 function Section({ id, title, icon, badge, children, actions, isExpanded, onToggle }) {
   return (
-    <div className="bg-white/80 backdrop-blur-xl rounded-[1.5rem] border border-white/60 shadow-[0_4px_10px_-2px_rgba(0,0,0,0.02),0_15px_25px_-5px_rgba(0,0,0,0.02)] overflow-hidden transition-all duration-400 ease-out hover:shadow-[0_10px_20px_-3px_rgba(0,0,0,0.04)] hover:-translate-y-1 group">
-      <div className="w-full flex items-center justify-between px-6 py-4 hover:bg-white/50 transition-colors">
+    <div className="bg-white rounded-2xl shadow-soft-ui overflow-hidden mb-4">
+      <div className="w-full flex items-center justify-between px-4 py-4 border-b border-gray-50">
         <button onClick={() => onToggle(id)} className="flex items-center gap-3 flex-1 text-left">
-          <span className="text-teal-600 bg-teal-50/50 p-2 rounded-xl group-hover:scale-110 transition-transform">{icon}</span>
-          <span className="font-bold text-[0.95rem] text-[#2C2C2C] tracking-tight">{title}</span>
-          {badge != null && <span className="px-2.5 py-0.5 bg-teal-50 text-teal-700 text-[10px] font-bold uppercase tracking-wider rounded-lg border border-teal-100/50">{badge}</span>}
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tl from-[#141727] to-[#3A416F] text-white flex items-center justify-center shadow-md">
+            {icon}
+          </div>
+          <span className="font-bold text-base text-[#344767] tracking-tight">{title}</span>
+          {badge != null && <span className="px-2 py-0.5 bg-gray-100 text-[#67748e] text-xs font-bold rounded-lg ml-2">{badge}</span>}
         </button>
         <div className="flex items-center gap-3">
           {actions && <div className="mr-1">{actions}</div>}
-          <button onClick={() => onToggle(id)} className="p-1.5 w-8 h-8 flex items-center justify-center rounded-full bg-gray-50/50 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+          <button onClick={() => onToggle(id)} className="text-[#67748e] hover:text-[#344767] transition-colors p-1">
             {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </button>
         </div>
       </div>
-      {isExpanded && <div className="border-t border-gray-100/50 bg-white/40">{children}</div>}
+      {isExpanded && <div className="bg-white">{children}</div>}
     </div>
   );
 }
@@ -212,9 +217,9 @@ export default function AdminDashboard({ onSwitchToUser, user }) {
     return () => clearInterval(i);
   }, [activeTab]);
 
-  const generateProcurementOrders = async () => { setLoading(true); try { const r = await fetch(`${API_BASE}/procurement/generate?urgency=attention`, { method: 'POST' }); const d = await r.json(); setScopedMessage({ type: 'success', text: d.message || 'Procurement orders generated.' }); await Promise.all([fetchProcurementQueue(), fetchEvents()]); } catch { setScopedMessage({ type: 'error', text: 'Failed to generate orders' }); } finally { setLoading(false); } };
-  const sendOrderToSupplier = async (orderId) => { try { const r = await fetch(`${API_BASE}/procurement/${orderId}/send`, { method: 'POST' }); const d = await r.json(); if (d.error) throw new Error(d.error); setScopedMessage({ type: 'success', text: `Order sent to supplier. Status updated to ordered.` }); await Promise.all([fetchProcurementQueue(), fetchEvents(), fetchWebhookLogs()]); } catch (e) { setScopedMessage({ type: 'error', text: e.message || 'Failed to send order' }); } };
-  const markOrderReceived = async (orderId) => { try { const r = await fetch(`${API_BASE}/procurement/${orderId}/receive`, { method: 'POST' }); const d = await r.json(); if (d.success) { setScopedMessage({ type: 'success', text: `Stock updated: +${d.quantity_received ?? ''} units received. Inventory refreshed.` }); await refreshAllData(); } else { setScopedMessage({ type: 'error', text: d.error || 'Failed to mark received' }); } } catch { setScopedMessage({ type: 'error', text: 'Failed to mark received' }); } };
+  const generateProcurementOrders = async (force = false) => { setLoading(true); try { const urgency = force ? 'healthy' : 'attention'; const r = await fetch(`${API_BASE}/procurement/generate?urgency=${urgency}`, { method: 'POST' }); const d = await r.json(); setScopedMessage({ type: d.orders?.length > 0 ? 'success' : 'success', text: d.message || 'Procurement orders generated.' }); await Promise.all([fetchProcurementQueue(), fetchEvents()]); } catch { setScopedMessage({ type: 'error', text: 'Failed to generate orders' }); } finally { setLoading(false); } };
+  const sendOrderToSupplier = async (orderId) => { try { const r = await fetch(`${API_BASE}/procurement/${orderId}/send`, { method: 'POST' }); const d = await r.json(); if (!r.ok) throw new Error(d.detail || d.error || 'Failed to send order'); setScopedMessage({ type: 'success', text: `Order sent to supplier. Status updated to ordered.` }); await Promise.all([fetchProcurementQueue(), fetchEvents(), fetchWebhookLogs()]); } catch (e) { setScopedMessage({ type: 'error', text: e.message || 'Failed to send order' }); } };
+  const markOrderReceived = async (orderId) => { try { const r = await fetch(`${API_BASE}/procurement/${orderId}/receive`, { method: 'POST' }); const d = await r.json(); if (!r.ok) throw new Error(d.detail || d.error || 'Failed to mark received'); setScopedMessage({ type: 'success', text: `Stock updated: +${d.quantity_received ?? ''} units received. Inventory refreshed.` }); await refreshAllData(); } catch (e) { setScopedMessage({ type: 'error', text: e.message || 'Failed to mark received' }); } };
   const handleRunEval = async () => {
     setIsEvaluating(true);
     try {
@@ -287,58 +292,63 @@ export default function AdminDashboard({ onSwitchToUser, user }) {
 
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-[#FCFAFA] to-[#F5F5F5] font-sans relative overflow-hidden">
-      {/* Decorative Blur Backgrounds for luxury feel */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-200/20 rounded-full mix-blend-multiply filter blur-[100px] opacity-70 pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-200/20 rounded-full mix-blend-multiply filter blur-[100px] opacity-70 pointer-events-none" />
+    <div className="flex h-screen bg-[#f8f9fa] font-sans relative overflow-hidden">
 
       {/* ═══ Slim Sidebar ═══ */}
-      <aside className="w-56 bg-white/80 backdrop-blur-xl border-r border-white/40 flex flex-col shadow-[1px_0_15px_-3px_rgba(0,0,0,0.03)] relative z-10">
-        <div className="p-4 flex items-center justify-center border-b border-gray-100">
-          <img
-            src="/admin_logo.png"
-            alt="Mediloon Admin"
-            className="w-48 h-48 object-contain pointer-events-none transform scale-110"
-            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/mediloon-logo.webp'; }}
-          />
+      <aside className="w-64 bg-transparent flex flex-col relative z-10 m-4 rounded-2xl">
+        <div className="p-6 flex items-center justify-center mb-2">
+          <div className="font-bold text-lg tracking-tight text-[#344767] flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-tl from-purple-700 to-pink-500 rounded-lg flex justify-center items-center">
+              <span className="text-white font-bold leading-none">M</span>
+            </div>
+            Mediloon Admin
+          </div>
         </div>
 
-        <nav className="flex-1 p-3 space-y-1">
+        <nav className="flex-1 px-4 space-y-1.5">
           {tabs.map(t => (
             <button key={t.id} onClick={() => { setActiveTab(t.id); setMessage(null); }}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 ${activeTab === t.id ? 'bg-teal-50 text-teal-700 font-semibold shadow-sm ring-1 ring-teal-200' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'}`}>
-              {t.icon}<span>{t.label}</span>
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${activeTab === t.id
+                ? 'bg-white text-[#344767] shadow-soft-ui'
+                : 'text-[#67748e] hover:bg-white/50 hover:text-[#344767]'
+                }`}>
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-sm ${activeTab === t.id
+                ? 'bg-gradient-to-tl from-purple-700 to-pink-500 text-white shadow-md'
+                : 'bg-white text-[#344767] shadow-soft-ui'
+                }`}>
+                {t.icon}
+              </div>
+              <span>{t.label}</span>
             </button>
           ))}
         </nav>
 
-        <div className="p-3 border-t border-gray-100 space-y-2">
-          <div className="px-3 py-2 bg-gray-50 rounded-xl">
-            <div className="text-[9px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">Logged in</div>
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-bold text-[10px]">{user?.name?.[0] || 'A'}</div>
-              <span className="text-xs font-medium text-gray-700 truncate">{user?.name || 'Admin'}</span>
+        <div className="px-4 pb-4">
+          <div className="bg-gradient-to-tl from-purple-700 to-pink-500 rounded-2xl p-4 shadow-soft-ui text-white">
+            <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center mb-3">
+              <div className="text-white font-bold text-sm">{user?.name?.[0] || 'A'}</div>
             </div>
+            <h6 className="text-sm font-bold mb-0.5">{user?.name || 'Admin'}</h6>
+            <p className="text-xs text-white/80 mb-4 opacity-80">Logged in</p>
+            <button onClick={onSwitchToUser} className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-white text-[#344767] rounded-lg text-xs font-bold hover:bg-gray-50 transition-colors shadow-sm uppercase tracking-wide">
+              User View
+            </button>
           </div>
-          <button onClick={onSwitchToUser} className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-semibold hover:bg-gray-800 transition-colors shadow active:scale-95">
-            <Users size={14} /> User View
-          </button>
         </div>
       </aside>
 
       {/* ═══ Main Content ═══ */}
       <main className="flex-1 flex flex-col overflow-hidden relative z-10">
         {/* Header */}
-        <header className="h-16 bg-white/60 backdrop-blur-md border-b border-white/40 px-8 flex items-center justify-between shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] sticky top-0 z-20">
-          <div className="flex items-center gap-2">
-            {tabs.find(t => t.id === activeTab)?.icon}
-            <h2 className="text-lg font-bold text-gray-800">{tabs.find(t => t.id === activeTab)?.label}</h2>
+        <header className="h-20 px-6 flex items-center justify-between sticky top-0 z-20">
+          <div>
+            <h6 className="text-base font-bold text-[#344767] capitalize m-0">{tabs.find(t => t.id === activeTab)?.label}</h6>
           </div>
-          <div className="flex items-center gap-3">
-            <button onClick={refreshAllData} className={`p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all ${loading ? 'animate-spin' : ''}`}>
-              <RefreshCw size={16} />
+          <div className="flex items-center gap-4">
+            <button onClick={refreshAllData} className={`text-[#67748e] hover:text-[#344767] transition-all ${loading ? 'animate-spin' : ''}`}>
+              <RefreshCw size={18} />
             </button>
-            <span className="text-xs text-gray-400">{new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}</span>
+            <span className="text-xs font-bold text-[#67748e]">{new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}</span>
           </div>
         </header>
 
@@ -357,41 +367,47 @@ export default function AdminDashboard({ onSwitchToUser, user }) {
           {activeTab === 'overview' && (
             <div className="space-y-6 animate-fade-in-up px-2 pb-6">
               {/* ★ Priority Procurement Section (High Visibility) */}
-              <div className="bg-white/80 backdrop-blur-xl border border-white/60 rounded-[1.5rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden mb-2 group transition-all duration-500 hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] hover:-translate-y-1">
-                {/* Decorative Elements */}
-                <div className="absolute -top-12 -right-12 w-48 h-48 bg-amber-400/10 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                <div className="absolute top-1/2 -right-6 -translate-y-1/2 p-3 text-amber-500/10 group-hover:text-amber-500/20 transition-colors duration-700 pointer-events-none">
-                  <Truck size={160} strokeWidth={1} />
-                </div>
-
+              <div className="bg-white rounded-2xl p-6 shadow-soft-ui relative overflow-hidden mb-2">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between relative z-10 gap-6">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="p-2 bg-amber-50 text-amber-600 rounded-xl shadow-[inset_0_2px_4px_0_rgba(245,158,11,0.05)]">
-                        <Zap size={20} className="fill-amber-500/20" />
-                      </div>
-                      <h3 className="font-brand font-bold text-xl text-[#2C2C2C] tracking-tight">Priority Procurement</h3>
+                  <div className="flex items-start gap-4">
+                    <div className="w-16 h-16 rounded-xl bg-gradient-to-tl from-[#141727] to-[#3A416F] text-white flex items-center justify-center shadow-md flex-shrink-0">
+                      <Truck size={28} />
                     </div>
-                    <p className="text-[#6B6B6B] text-sm max-w-md font-medium leading-relaxed">
-                      AI-driven restocking. <span className="text-gray-900 font-bold">{procurementQueue.length} orders</span> pending approval.
-                      {procurementQueue.length > 0 && <span className="text-amber-600 font-bold ml-1.5 px-2 py-0.5 bg-amber-50 rounded-md border border-amber-100/50 text-xs">Action required</span>}
-                    </p>
+                    <div>
+                      <h5 className="font-bold text-lg text-[#344767] tracking-tight m-0">Priority Procurement</h5>
+                      <p className="text-[#67748e] text-sm font-medium leading-relaxed mt-1">
+                        AI-driven restocking. <span className="text-[#344767] font-bold">{procurementQueue.filter(o => o.status === 'pending').length} pending</span> · <span className="text-[#344767] font-bold">{procurementQueue.filter(o => o.status === 'ordered').length} ordered</span>.
+                        {lowStockPredictions.length === 0 && <span className="text-green-500 font-bold ml-2 text-xs">✓ All stock healthy</span>}
+                        {lowStockPredictions.length > 0 && <span className="text-amber-500 font-bold ml-2 text-xs">Action required</span>}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-6 sm:pl-6 sm:border-l sm:border-gray-100">
+                  <div className="flex items-center gap-3">
                     <div className="text-right hidden sm:block">
-                      <div className="text-3xl font-mono font-bold leading-none text-[#2C2C2C]">{procurementQueue.filter(o => o.status === 'ordered').length}</div>
-                      <div className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mt-1">On Order</div>
+                      <h4 className="text-2xl font-bold text-[#344767] m-0">{procurementQueue.filter(o => o.status === 'ordered').length}</h4>
+                      <div className="text-xs text-[#67748e] font-bold uppercase tracking-wider mt-0.5">On Order</div>
                     </div>
 
-                    <button
-                      onClick={generateProcurementOrders}
-                      disabled={loading}
-                      className="px-6 py-3.5 bg-[#294056] text-white rounded-[1.25rem] font-bold text-sm shadow-[0_8px_20px_-6px_rgba(41,64,86,0.4)] hover:shadow-[0_12px_25px_-8px_rgba(41,64,86,0.5)] transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2 group/btn min-w-[160px]"
-                    >
-                      {loading ? <Loader2 className="animate-spin" size={18} /> : <Zap size={18} className="fill-white/20 group-hover/btn:fill-white/40 transition-colors" />}
-                      Auto-Generate
-                    </button>
+                    <div className="flex flex-col gap-2">
+                      <button
+                        onClick={() => generateProcurementOrders(false)}
+                        disabled={loading}
+                        className="px-5 py-2.5 bg-gradient-to-tl from-purple-700 to-pink-500 text-white rounded-lg font-bold text-xs uppercase tracking-wide shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 min-w-[140px]"
+                      >
+                        {loading ? <Loader2 className="animate-spin" size={14} /> : <Zap size={14} />}
+                        Auto-Generate
+                      </button>
+                      <button
+                        onClick={() => generateProcurementOrders(true)}
+                        disabled={loading}
+                        title="Force generate orders for all items regardless of stock level"
+                        className="px-5 py-2.5 bg-white text-[#344767] border border-[#d2d6da] rounded-lg font-bold text-xs uppercase tracking-wide shadow-sm hover:shadow-soft-ui transition-all flex items-center justify-center gap-2 min-w-[140px]"
+                      >
+                        {loading ? <Loader2 className="animate-spin" size={14} /> : <RefreshCw size={14} />}
+                        Force Generate
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -435,20 +451,20 @@ export default function AdminDashboard({ onSwitchToUser, user }) {
                       const ringColor = daysLeft <= 3 ? '#DC2626' : daysLeft <= 7 ? '#F59E0B' : '#14B8A6';
                       const pct = Math.max(0, Math.min(100, ((30 - Math.max(0, daysLeft)) / 30) * 100));
                       return (
-                        <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-white/50 border border-gray-100/50 hover:bg-white hover:border-teal-100/50 hover:shadow-[0_8px_20px_-6px_rgba(0,0,0,0.05)] transition-all duration-300 group">
+                        <div key={i} className="flex items-start gap-4 p-4 border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
                           <AdminRing pct={pct} size={48} strokeWidth={4} color={ringColor}>
-                            <span className="text-[11px] font-bold" style={{ color: ringColor }}>{daysLeft}d</span>
+                            <span className="text-xs font-bold" style={{ color: ringColor }}>{daysLeft}d</span>
                           </AdminRing>
                           <div className="flex-1 min-w-0">
-                            <div className="font-bold text-sm text-[#2C2C2C] truncate mb-0.5" title={pred.brand_name}>{pred.brand_name}</div>
+                            <h6 className="font-bold text-sm text-[#344767] truncate mb-0.5" title={pred.brand_name}>{pred.brand_name}</h6>
                             <div className="flex items-center gap-2 mb-2">
-                              <span className="text-[10px] font-medium text-gray-400">Stock: <span className="font-bold text-gray-600">{pred.current_stock}</span></span>
-                              <span className="w-1 h-1 rounded-full bg-gray-200" />
-                              <span className="text-[10px] font-medium text-gray-400"><span className="font-bold text-gray-600">{pred.units_per_day}</span>/day</span>
+                              <span className="text-xs font-medium text-[#67748e]">Stock: <span className="font-bold text-[#344767]">{pred.current_stock}</span></span>
+                              <span className="w-1 h-1 rounded-full bg-[#d2d6da]" />
+                              <span className="text-xs font-medium text-[#67748e]"><span className="font-bold text-[#344767]">{pred.units_per_day}</span>/day</span>
                             </div>
-                            <div className="opacity-70 group-hover:opacity-100 transition-opacity"><MiniBar value={30 - daysLeft} max={30} color={daysLeft <= 3 ? 'red' : daysLeft <= 7 ? 'amber' : 'teal'} showLabel={false} /></div>
+                            <div className="mt-2"><MiniBar value={30 - daysLeft} max={30} color={daysLeft <= 3 ? 'red' : daysLeft <= 7 ? 'amber' : 'teal'} showLabel={false} /></div>
                           </div>
-                          <span className={`text-[9px] font-bold tracking-wider uppercase px-2 py-1 rounded-md border border-current/20 flex-shrink-0 ${uc}`}>{pred.urgency}</span>
+                          <span className={`text-[9px] font-bold tracking-wider uppercase px-2 py-1 rounded border ${uc}`}>{pred.urgency}</span>
                         </div>
                       );
                     })}
@@ -482,21 +498,21 @@ export default function AdminDashboard({ onSwitchToUser, user }) {
             <div className="space-y-6 animate-fade-in-up px-2 pb-6">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="relative max-w-sm w-full">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                  <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} type="text" placeholder="Search medications..." className="w-full bg-white/70 backdrop-blur-xl border border-white/50 hover:border-teal-200/60 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] rounded-[1.25rem] pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 text-[#2C2C2C] transition-all placeholder:text-gray-400 font-medium" />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#67748e]" size={14} />
+                  <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} type="text" placeholder="Search medications..." className="w-full bg-white border border-[#d2d6da] shadow-sm rounded-lg pl-11 pr-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 focus:shadow-soft-ui transition-all placeholder:text-[#67748e] text-[#495057]" />
                 </div>
                 <div className="flex items-center gap-3 w-full sm:w-auto">
                   <div className="relative">
-                    <button onClick={() => setShowFilterOptions(s => !s)} className="flex items-center justify-center gap-2 px-4 py-3 bg-white/70 backdrop-blur-xl rounded-[1.25rem] text-sm font-semibold text-[#6B6B6B] shadow-[0_4px_15px_-3px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_25px_-6px_rgba(0,0,0,0.06)] hover:bg-white border border-white/50 transition-all hover:-translate-y-0.5"><Filter size={16} /> Filter</button>
+                    <button onClick={() => setShowFilterOptions(s => !s)} className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white rounded-lg text-sm font-bold text-[#67748e] shadow-sm hover:shadow-soft-ui border border-[#d2d6da] transition-all"><Filter size={14} /> Filter</button>
                     {showFilterOptions && (
-                      <div className="absolute right-0 mt-2 w-40 bg-white rounded-xl border border-gray-100 shadow-lg p-2 z-20">
-                        <button onClick={() => { setFilterRx('all'); setShowFilterOptions(false); }} className={`w-full text-left px-3 py-2 rounded-md ${filterRx==='all'?'bg-teal-50':''}`}>All</button>
-                        <button onClick={() => { setFilterRx('rx'); setShowFilterOptions(false); }} className={`w-full text-left px-3 py-2 rounded-md ${filterRx==='rx'?'bg-teal-50':''}`}>Prescription only</button>
-                        <button onClick={() => { setFilterRx('otc'); setShowFilterOptions(false); }} className={`w-full text-left px-3 py-2 rounded-md ${filterRx==='otc'?'bg-teal-50':''}`}>OTC only</button>
+                      <div className="absolute right-0 mt-2 w-40 bg-white rounded-xl border border-[#d2d6da] shadow-soft-ui p-2 z-20">
+                        <button onClick={() => { setFilterRx('all'); setShowFilterOptions(false); }} className={`w-full text-left px-3 py-2 rounded-md text-sm text-[#495057] ${filterRx === 'all' ? 'bg-gray-50 font-bold' : ''}`}>All</button>
+                        <button onClick={() => { setFilterRx('rx'); setShowFilterOptions(false); }} className={`w-full text-left px-3 py-2 rounded-md text-sm text-[#495057] ${filterRx === 'rx' ? 'bg-gray-50 font-bold' : ''}`}>Prescription only</button>
+                        <button onClick={() => { setFilterRx('otc'); setShowFilterOptions(false); }} className={`w-full text-left px-3 py-2 rounded-md text-sm text-[#495057] ${filterRx === 'otc' ? 'bg-gray-50 font-bold' : ''}`}>OTC only</button>
                       </div>
                     )}
                   </div>
-                  <button onClick={() => setShowAddMedModal(true)} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-[#294056] text-white rounded-[1.25rem] text-sm font-bold shadow-[0_8px_20px_-6px_rgba(41,64,86,0.4)] hover:shadow-[0_12px_25px_-8px_rgba(41,64,86,0.5)] transition-all hover:-translate-y-1"><Plus size={16} /> Add Medication</button>
+                  <button onClick={() => setShowAddMedModal(true)} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-gradient-to-tl from-purple-700 to-pink-500 text-white rounded-lg text-xs font-bold shadow-md hover:shadow-lg transition-all uppercase tracking-wide"><Plus size={14} /> Add Medication</button>
                 </div>
               </div>
 
@@ -520,15 +536,15 @@ export default function AdminDashboard({ onSwitchToUser, user }) {
                   const pct = maxDisplay > 0 ? Math.min(100, (med.stock_quantity / maxDisplay) * 100) : 0;
 
                   return (
-                    <div key={med.id} className="bg-white/80 backdrop-blur-xl rounded-[1.5rem] p-5 shadow-[0_4px_10px_-2px_rgba(0,0,0,0.02),0_15px_25px_-5px_rgba(0,0,0,0.02)] hover:shadow-[0_10px_20px_-3px_rgba(0,0,0,0.04),0_25px_30px_-8px_rgba(14,165,233,0.06)] transition-all duration-400 ease-out hover:-translate-y-1.5 relative group overflow-hidden border border-white flex flex-col min-h-[190px]">
-                      {isCritical && <div className="absolute top-0 right-0 w-24 h-24 pointer-events-none before:absolute before:inset-0 before:bg-red-500/5 before:rounded-bl-[4rem] before:transition-all group-hover:before:bg-red-500/10 transition-colors" />}
+                    <div key={med.id} className="bg-white rounded-2xl p-5 shadow-soft-ui relative group overflow-hidden flex flex-col min-h-[190px]">
+                      {isCritical && <div className="absolute top-0 right-0 w-24 h-24 pointer-events-none before:absolute before:inset-0 before:bg-red-500/5 before:rounded-bl-3xl before:transition-all group-hover:before:bg-red-500/10 transition-colors" />}
 
                       <div className="flex justify-between items-start mb-5 relative z-10">
                         <div className="flex-1 min-w-0 pr-3">
-                          <h4 className="text-base font-bold text-[#2C2C2C] truncate mb-0.5" title={med.product_name}>{med.product_name}</h4>
-                          <p className="text-[#6B6B6B] text-[11px] font-medium tracking-wide uppercase">{med.package_size || 'N/A'} • {med.form || 'UNIT'}</p>
-                          {med.description && <div className="text-[11px] text-gray-500 mt-1 truncate">{med.description}</div>}
-                          {med.base_price_eur != null && <div className="text-[13px] font-semibold text-gray-800 mt-1">€{Number(med.base_price_eur).toFixed(2)}</div>}
+                          <h4 className="text-base font-bold text-[#344767] truncate mb-0.5" title={med.product_name}>{med.product_name}</h4>
+                          <p className="text-[#67748e] text-[11px] font-bold tracking-wide uppercase">{med.package_size || 'N/A'} • {med.form || 'UNIT'}</p>
+                          {med.description && <div className="text-[11px] text-[#67748e] mt-1 truncate">{med.description}</div>}
+                          {med.base_price_eur != null && <div className="text-sm font-bold text-[#344767] mt-1">€{Number(med.base_price_eur).toFixed(2)}</div>}
                         </div>
                         <div className="flex items-start gap-2">
                           {med.rx_required ? <span className="px-2 py-1 bg-[#FEF3C7] text-[#B45309] text-[9px] font-bold uppercase tracking-wider rounded-md border border-[#FDE68A] shadow-[0_2px_4px_-1px_rgba(245,158,11,0.1)] flex-shrink-0">RX</span> : <span className="px-2 py-1 bg-green-50 text-green-700 text-[9px] font-bold uppercase tracking-wider rounded-md border border-green-100 flex-shrink-0">OTC</span>}
@@ -542,22 +558,22 @@ export default function AdminDashboard({ onSwitchToUser, user }) {
                         </AdminRing>
 
                         <div className="flex-1">
-                          <div className="text-[9px] font-bold uppercase tracking-wider text-gray-400 mb-1.5 flex justify-between">
+                          <div className="text-[9px] font-bold uppercase tracking-wider text-[#67748e] mb-1.5 flex justify-between">
                             <span>Balance</span>
                             <span>Min {threshold}</span>
                           </div>
-                          <div className="flex items-center gap-1 bg-white/50 backdrop-blur-md rounded-xl shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.02)] p-1 border border-gray-100/60 transition-colors group-hover:bg-white">
-                            <button onClick={() => handleUpdateStock(med.id, Math.max(0, med.stock_quantity - 1))} className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors cursor-pointer active:scale-90">-</button>
+                          <div className="flex items-center gap-1 bg-[#f8f9fa] rounded-lg p-1 border border-[#d2d6da] transition-colors">
+                            <button onClick={() => handleUpdateStock(med.id, Math.max(0, med.stock_quantity - 1))} className="w-8 h-8 flex items-center justify-center rounded-md text-[#67748e] hover:bg-white hover:text-red-500 hover:shadow-sm transition-all cursor-pointer">-</button>
                             <input
                               type="number"
-                              className="flex-1 w-full min-w-0 bg-transparent text-center text-sm font-bold text-[#2C2C2C] focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none transition-colors"
+                              className="flex-1 w-full min-w-0 bg-transparent text-center text-sm font-bold text-[#344767] focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none transition-colors"
                               value={med.stock_quantity}
                               onChange={e => {
                                 const val = parseInt(e.target.value);
                                 if (!isNaN(val)) handleUpdateStock(med.id, val);
                               }}
                             />
-                            <button onClick={() => handleUpdateStock(med.id, med.stock_quantity + 1)} className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-teal-50 hover:text-teal-600 transition-colors cursor-pointer active:scale-90">+</button>
+                            <button onClick={() => handleUpdateStock(med.id, med.stock_quantity + 1)} className="w-8 h-8 flex items-center justify-center rounded-md text-[#67748e] hover:bg-white hover:text-teal-500 hover:shadow-sm transition-all cursor-pointer">+</button>
                           </div>
                         </div>
                       </div>
@@ -581,20 +597,20 @@ export default function AdminDashboard({ onSwitchToUser, user }) {
               {/* Procurement */}
               <Section id="procurement" title="Procurement Orders" icon={<Truck size={16} />} badge={procurementQueue.length}
                 isExpanded={expandedSections.procurement} onToggle={toggleSection}
-                actions={<div role="button" tabIndex={0} onClick={() => !loading && generateProcurementOrders()} onKeyDown={e => e.key === 'Enter' && !loading && generateProcurementOrders()} className={`px-3 py-1.5 bg-gray-900 text-white rounded-lg text-[11px] font-semibold hover:bg-gray-800 transition-colors flex items-center gap-1 cursor-pointer select-none ${loading ? 'opacity-50 pointer-events-none' : ''}`}>{loading ? <Loader2 className="animate-spin" size={12} /> : <Zap size={12} />} Auto-Generate</div>}>
+                actions={<div role="button" tabIndex={0} onClick={() => !loading && generateProcurementOrders()} onKeyDown={e => e.key === 'Enter' && !loading && generateProcurementOrders()} className={`px-3 py-1.5 bg-gradient-to-tl from-purple-700 to-pink-500 text-white rounded-lg text-[11px] font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-1 cursor-pointer select-none uppercase tracking-wide ${loading ? 'opacity-50 pointer-events-none' : ''}`}>{loading ? <Loader2 className="animate-spin" size={12} /> : <Zap size={12} />} Auto-Generate</div>}>
                 <div className="max-h-[350px] overflow-auto">
                   {procurementQueue.length === 0 ? <div className="py-8 text-center text-gray-400 text-sm">No active orders</div> : (
                     <table className="w-full text-xs text-left">
-                      <thead className="bg-gray-50 text-gray-500 uppercase font-semibold sticky top-0"><tr><th className="px-4 py-2.5">Status</th><th className="px-4 py-2.5">Item</th><th className="px-4 py-2.5">Supplier</th><th className="px-4 py-2.5 text-right">Actions</th></tr></thead>
+                      <thead className="bg-gray-50/50 text-[#67748e] uppercase font-bold text-[10px] tracking-wider sticky top-0"><tr><th className="px-4 py-3 border-b border-[#f0f2f5]">Status</th><th className="px-4 py-3 border-b border-[#f0f2f5]">Item</th><th className="px-4 py-3 border-b border-[#f0f2f5]">Supplier</th><th className="px-4 py-3 text-right border-b border-[#f0f2f5]">Actions</th></tr></thead>
                       <tbody className="divide-y divide-gray-50">{procurementQueue.map(order => (
-                        <tr key={order.order_id} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-4 py-2.5"><span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${getStatusColor(order.status)}`}>{order.status}</span></td>
-                          <td className="px-4 py-2.5"><div className="font-semibold text-gray-800">{order.brand_name}</div><div className="text-gray-400">{order.quantity || order.order_quantity} units</div></td>
-                          <td className="px-4 py-2.5 text-gray-600">{order.supplier_name || order.supplier?.name}</td>
-                          <td className="px-4 py-2.5 text-right">
-                            {order.status === 'pending' && <button onClick={() => sendOrderToSupplier(order.order_id)} className="px-3 py-1 bg-blue-600 text-white rounded-lg text-[10px] font-semibold hover:bg-blue-700">Send</button>}
-                            {order.status === 'ordered' && <button onClick={() => markOrderReceived(order.order_id)} className="px-3 py-1 bg-green-600 text-white rounded-lg text-[10px] font-semibold hover:bg-green-700">Received</button>}
-                            {order.status === 'received' && <span className="text-[10px] text-gray-400">Done</span>}
+                        <tr key={order.order_id} className="hover:bg-gray-50/50 transition-colors">
+                          <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${getStatusColor(order.status)}`}>{order.status}</span></td>
+                          <td className="px-4 py-3"><div className="font-bold text-sm text-[#344767]">{order.brand_name}</div><div className="text-xs text-[#67748e] font-medium">{order.quantity || order.order_quantity} units</div></td>
+                          <td className="px-4 py-3 text-sm font-medium text-[#67748e]">{order.supplier_name || order.supplier?.name}</td>
+                          <td className="px-4 py-3 text-right relative">
+                            {order.status === 'pending' && <button onClick={() => sendOrderToSupplier(order.order_id)} className="relative z-10 px-3 py-1.5 bg-gradient-to-tl from-blue-600 to-indigo-400 text-white rounded-lg text-[10px] uppercase tracking-wide font-bold shadow-sm hover:shadow-md transition-all cursor-pointer">Send</button>}
+                            {order.status === 'ordered' && <button onClick={() => markOrderReceived(order.order_id)} className="relative z-10 px-3 py-1.5 bg-gradient-to-tl from-green-500 to-emerald-400 text-white rounded-lg text-[10px] uppercase tracking-wide font-bold shadow-sm hover:shadow-md transition-all cursor-pointer">Received</button>}
+                            {order.status === 'received' && <span className="text-xs font-bold text-[#67748e]">Done</span>}
                           </td>
                         </tr>
                       ))}</tbody>
@@ -606,7 +622,7 @@ export default function AdminDashboard({ onSwitchToUser, user }) {
               {/* Customer Refills */}
               <Section id="refills" title="Customer Refills" icon={<RefreshCw size={16} />} badge={refillAlerts.length}
                 isExpanded={expandedSections.refills} onToggle={toggleSection}
-                actions={<div role="button" tabIndex={0} onClick={() => { setShowPatientDataModal(true); fetchPatientData(); }} onKeyDown={e => { if (e.key === 'Enter') { setShowPatientDataModal(true); fetchPatientData(); } }} className="px-3 py-1.5 bg-teal-50 text-teal-700 rounded-lg text-[11px] font-semibold hover:bg-teal-100 transition-colors flex items-center gap-1 border border-teal-200 cursor-pointer select-none"><Users size={12} /> Patients</div>}>
+                actions={<div role="button" tabIndex={0} onClick={() => { setShowPatientDataModal(true); fetchPatientData(); }} onKeyDown={e => { if (e.key === 'Enter') { setShowPatientDataModal(true); fetchPatientData(); } }} className="px-3 py-1.5 bg-[#f8f9fa] text-[#344767] rounded-lg text-[11px] font-bold hover:bg-white border border-[#d2d6da] shadow-sm hover:shadow-soft-ui transition-all flex items-center gap-1 cursor-pointer select-none uppercase tracking-wide"><Users size={12} /> Patients</div>}>
                 <div className="max-h-[350px] overflow-y-auto p-3">
                   {refillAlerts.length === 0 ? <div className="py-8 text-center text-gray-400 text-sm">No refills due</div> : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -637,7 +653,7 @@ export default function AdminDashboard({ onSwitchToUser, user }) {
             <div className="space-y-4 animate-fade-in-up">
               {/* Status + RAG Row */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-                <div className="bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_4px_10px_-2px_rgba(0,0,0,0.02),0_15px_25px_-5px_rgba(0,0,0,0.02)] rounded-[1.5rem] p-6 transition-all duration-400 hover:shadow-[0_10px_20px_-3px_rgba(0,0,0,0.04)] hover:-translate-y-1">
+                <div className="bg-white rounded-2xl p-6 shadow-soft-ui relative overflow-hidden flex flex-col justify-between">
                   <div className="flex justify-between items-center mb-5">
                     <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Observability</span>
                     <div className="w-8 h-8 rounded-full bg-blue-50/50 flex items-center justify-center"><Activity size={14} className="text-blue-500" /></div>
@@ -656,7 +672,7 @@ export default function AdminDashboard({ onSwitchToUser, user }) {
                 </div>
 
                 {/* RAG Quality */}
-                <div className="bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_4px_10px_-2px_rgba(0,0,0,0.02),0_15px_25px_-5px_rgba(0,0,0,0.02)] rounded-[1.5rem] p-6 lg:col-span-2 transition-all duration-400 hover:shadow-[0_10px_20px_-3px_rgba(0,0,0,0.04)] hover:-translate-y-1">
+                <div className="bg-white rounded-2xl p-6 shadow-soft-ui lg:col-span-2 relative overflow-hidden">
                   <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center shadow-inner"><Brain size={18} className="text-purple-600" /></div>
@@ -665,8 +681,8 @@ export default function AdminDashboard({ onSwitchToUser, user }) {
                         <div className="text-[10px] text-gray-400 font-medium">Auto-evaluations powered by React Framework</div>
                       </div>
                     </div>
-                    <button onClick={handleRunEval} disabled={loading || isEvaluating} className="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-bold shadow-[0_4px_15px_-3px_rgba(79,70,229,0.3)] hover:shadow-[0_8px_20px_-5px_rgba(79,70,229,0.4)] transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group min-w-[120px]">
-                      {isEvaluating ? <Loader2 className="animate-spin" size={14} /> : <Zap size={14} className="fill-white/20 group-hover:fill-white/40 transition-colors" />}
+                    <button onClick={handleRunEval} disabled={loading || isEvaluating} className="px-5 py-2.5 bg-gradient-to-tl from-purple-700 to-pink-500 text-white rounded-lg text-xs font-bold shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 uppercase tracking-wide min-w-[120px]">
+                      {isEvaluating ? <Loader2 className="animate-spin" size={14} /> : <Zap size={14} className="fill-white/20 transition-colors" />}
                       {isEvaluating ? 'Evaluating...' : 'Run Evaluation'}
                     </button>
                   </div>
@@ -744,7 +760,7 @@ export default function AdminDashboard({ onSwitchToUser, user }) {
       {/* ═══ Add Medication Modal ═══ */}
       {showAddMedModal && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md border border-gray-100 animate-zoom-in">
+          <div className="bg-white rounded-2xl shadow-soft-ui p-6 w-full max-w-md border-0 animate-zoom-in">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-bold text-gray-800">Add Medication</h3>
               <button onClick={() => setShowAddMedModal(false)} className="w-7 h-7 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center"><X size={16} /></button>
@@ -778,7 +794,7 @@ export default function AdminDashboard({ onSwitchToUser, user }) {
       {/* ═══ Patient Data Modal ═══ */}
       {showPatientDataModal && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl border border-gray-100 animate-zoom-in" style={{ maxHeight: '85vh' }}>
+          <div className="bg-white rounded-2xl shadow-soft-ui w-full max-w-5xl border-0 animate-zoom-in" style={{ maxHeight: '85vh' }}>
             <div className="flex justify-between items-center p-5 border-b border-gray-100">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center"><Users size={16} /></div>

@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+    darkMode: 'class',
     content: [
         "./index.html",
         "./src/**/*.{js,ts,jsx,tsx}",
@@ -70,6 +71,8 @@ export default {
                 'lift': '0 10px 15px -3px rgba(0, 0, 0, 0.03), 0 4px 6px -4px rgba(0, 0, 0, 0.03)',
                 'lift-lg': '0 20px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04)',
                 'inner-glow': 'inset 0 1px 0 rgba(255,255,255,0.4)',
+                'soft-ui': '0 20px 27px 0 rgba(0, 0, 0, 0.05)',
+                'soft-ui-sm': '0 8px 26px -4px rgba(0, 0, 0, 0.15)',
             },
             animation: {
                 'float': 'float 6s ease-in-out infinite',

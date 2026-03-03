@@ -11,9 +11,30 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from config import CORS_ORIGINS, API_HOST, API_PORT
-from db.database import init_db
+from db.database import init_db, execute_write, execute_query
 from db.seed_data import seed_all
 from agents.procurement_agent import seed_suppliers
+
+
+async def seed_admin():
+    """Ensure the admin account exists with is_admin=1. Idempotent."""
+    import hashlib, os
+    name = os.environ.get('ADMIN_NAME', 'KRISHNAJADHAV')
+    email = os.environ.get('ADMIN_EMAIL', 'jadhavkrishna25751@gmail.com')
+    password = os.environ.get('ADMIN_PASSWORD', 'jadhav@admin')
+    salt = 'mediloon_salt_2026'
+    pw_hash = hashlib.sha256(f'{salt}{password}'.encode()).hexdigest()
+    existing = await execute_query('SELECT id FROM customers WHERE email = ?', (email,))
+    if existing:
+        await execute_write(
+            'UPDATE customers SET is_admin = 1, password_hash = ?, name = ? WHERE email = ?',
+            (pw_hash, name, email)
+        )
+    else:
+        await execute_write(
+            'INSERT INTO customers (name, email, password_hash, is_admin, notification_enabled, profile_completed) VALUES (?, ?, ?, 1, 1, 1)',
+            (name, email, pw_hash)
+        )
 from routes.agent_routes import router as agent_router
 from routes.admin_routes import router as admin_router
 from routes.refill_routes import router as refill_router
@@ -61,6 +82,10 @@ async def lifespan(app: FastAPI):
     seeded = await seed_suppliers()
     if seeded:
         print(f"Suppliers seeded: {seeded} records")
+
+    # Ensure admin account exists
+    await seed_admin()
+    print("✅ Admin account ready")
     
     # Initialize vector store
     if VECTOR_BACKEND == "pinecone" and init_pinecone:

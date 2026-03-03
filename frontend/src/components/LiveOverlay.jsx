@@ -125,7 +125,7 @@ export default function LiveOverlay({
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             {/* Blurred Backdrop */}
             <div
-                className="absolute inset-0 bg-white/60 backdrop-blur-md transition-opacity duration-500"
+                className="absolute inset-0 bg-white/60 dark:bg-[#0f1117]/75 backdrop-blur-md transition-opacity duration-500"
                 onClick={onClose}
             ></div>
 
@@ -144,16 +144,18 @@ export default function LiveOverlay({
                 <div className="relative">
                     <button
                         onClick={() => setShowLangMenu(v => !v)}
-                        className="flex items-center gap-2 px-3 py-2 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl shadow-sm hover:border-mediloon-200 hover:text-mediloon-600 transition-colors text-sm font-semibold"
+                        className="flex items-center gap-2 px-3 py-2 bg-white/90 dark:bg-[#1f2233]/95 dark:text-[#c8d3f0] backdrop-blur-sm border border-gray-200 dark:border-[#2d3248] rounded-xl shadow-sm hover:border-mediloon-200 hover:text-mediloon-600 transition-colors text-sm font-semibold"
                         title={t('chooseListeningLanguage')}
                     >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m3 14h9m-9 0a3 3 0 01-3-3v-4m0 7a3 3 0 01-3-3v-4m6 7v-4m0 0a3 3 0 00-3-3H3" /></svg>
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="m12.87 15.07-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7 1.62-4.33L19.12 17h-3.24z" />
+                        </svg>
                         <span>{activeLangLabel}</span>
                         <svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.25a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" /></svg>
                     </button>
 
                     {showLangMenu && (
-                        <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fade-in">
+                        <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#1a1d27] rounded-2xl shadow-xl border border-gray-100 dark:border-[#2d3248] overflow-hidden animate-fade-in">
                             {langList.map((opt, idx) => {
                                 const isActive = opt.code === activeLanguage;
                                 return (
@@ -168,10 +170,10 @@ export default function LiveOverlay({
                                             }
                                             setShowLangMenu(false);
                                         }}
-                                        className={`w-full text-left px-4 py-3 flex flex-col gap-0.5 transition-colors ${isActive ? 'bg-mediloon-50 text-mediloon-600 font-semibold' : 'hover:bg-gray-50 text-gray-700'}`}
+                                        className={`w-full text-left px-4 py-3 flex flex-col gap-0.5 transition-colors ${isActive ? 'bg-mediloon-50 dark:bg-[#2d3248] text-mediloon-600 dark:text-[#88b8ff] font-semibold' : 'hover:bg-gray-50 dark:hover:bg-[#252840] text-gray-700 dark:text-[#c8d3f0]'}`}
                                     >
                                         <span className="text-sm">{opt.label}</span>
-                                        {opt.sub && <span className="text-xs text-gray-500">{opt.sub}</span>}
+                                        {opt.sub && <span className="text-xs text-gray-500 dark:text-[#6b74a0]">{opt.sub}</span>}
                                     </button>
                                 );
                             })}
@@ -224,7 +226,7 @@ export default function LiveOverlay({
                                     max-w-[80%] rounded-2xl px-6 py-4 text-lg shadow-sm backdrop-blur-sm
                                     ${msg.isUser
                                         ? 'bg-[#3270FC]/90 text-white rounded-br-none'
-                                        : 'bg-[#F4F7FB]/90 text-gray-800 border border-[#E2E8F0] rounded-bl-none'
+                                        : 'bg-[#F4F7FB]/90 dark:bg-[#1f2233]/95 text-gray-800 dark:text-[#e1e7f5] border border-[#E2E8F0] dark:border-[#2d3248] rounded-bl-none'
                                     }
                                 `} dir="auto">
                                     {msg.text}
@@ -235,7 +237,7 @@ export default function LiveOverlay({
                         {isListening && transcript && (
                             <div className="flex justify-end animate-fade-in">
                                 <div
-                                    className="relative max-w-[80%] rounded-2xl px-6 py-4 text-lg text-gray-800 bg-white/80 border border-gray-200 backdrop-blur-sm shadow-sm transition-all duration-150"
+                                    className="relative max-w-[80%] rounded-2xl px-6 py-4 text-lg text-gray-800 dark:text-[#e1e7f5] bg-white/80 dark:bg-[#1f2233]/90 border border-gray-200 dark:border-[#2d3248] backdrop-blur-sm shadow-sm transition-all duration-150"
                                     style={{
                                         direction: scriptInfo.direction,
                                         fontFamily: scriptInfo.script !== 'Latin'
