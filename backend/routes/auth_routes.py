@@ -100,7 +100,7 @@ def decode_access_token(token: str) -> Optional[dict]:
     try:
         decoded_data = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
         return decoded_data
-    except pyjwt.PyJWTError:
+    except jwt.PyJWTError:
         return None
 
 # ============ Helper Functions ============
