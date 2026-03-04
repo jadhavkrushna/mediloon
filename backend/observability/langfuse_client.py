@@ -8,11 +8,11 @@ import time
 # Import config which loads .env
 from config import LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, LANGFUSE_HOST
 
-# Try to import langfuse, handle gracefully if not installed
+# Try to import langfuse, handle gracefully if not installed or incompatible
 try:
     from langfuse import Langfuse
     LANGFUSE_AVAILABLE = True
-except ImportError:
+except Exception:  # Catches ImportError AND pydantic.v1 ConfigError on Python 3.14+
     LANGFUSE_AVAILABLE = False
     Langfuse = None
 
