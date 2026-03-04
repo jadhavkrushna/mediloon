@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://mediloon-backend.onrender.com/api/:path*"
+      "destination": "https://mediloon.onrender.com/api/:path*"
     }
   ]
 }

@@ -6,9 +6,18 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load environment variables from the .env file in the project root
-env_path = Path(__file__).parent.parent / ".env"
-load_dotenv(env_path, override=True)
+# Load environment variables — check multiple locations:
+# 1. Render secret files path (/etc/secrets/.env)
+# 2. Local repo root (.env next to frontend/backend folders)
+# 3. Backend folder itself
+_render_secrets = Path("/etc/secrets/.env")
+_repo_root_env  = Path(__file__).parent.parent / ".env"
+_backend_env    = Path(__file__).parent / ".env"
+
+for _env_path in [_render_secrets, _repo_root_env, _backend_env]:
+    if _env_path.exists():
+        load_dotenv(_env_path, override=True)
+        break
 
 # Base paths
 BASE_DIR = Path(__file__).parent.parent
@@ -62,8 +71,8 @@ API_PORT = int(os.getenv("API_PORT", "8000"))
 CORS_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    # Production Vercel deployments — update with your actual Vercel domain
-    "https://mediloon.vercel.app",
+    # Production Vercel deployment
+    "https://mediloon-frontend.vercel.app",
     "https://*.vercel.app",
 ]
 
