@@ -18,7 +18,7 @@ httpx>=0.26.0
 pinecone>=5.0.0
 
 # Observability
-langfuse>=2.0.0
+langfuse>=2.0.0,<3.0.0
 PyJWT>=2.8.0
 
 # File upload support (required by FastAPI UploadFile / File)
