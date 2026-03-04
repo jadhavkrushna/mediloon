@@ -92,7 +92,7 @@ async def index_medications():
 
         records.append({
             "_id": str(prod['id']),
-            "text": text_content,
+            "content": text_content,
             "brand_name": prod.get('product_name_en') or prod['product_name'],
             "generic_name": prod.get('product_name_en') or prod['product_name'],
             "product_name": prod['product_name'],
