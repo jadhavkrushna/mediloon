@@ -2,6 +2,15 @@
   "name": "mediloon-frontend",
   "private": true,
   "version": "1.0.0",
+  "description": "AI-driven multi-agent pharmacy system for autonomous medication ordering, real-time safety validation, stock forecasting, and procurement.",
+  "keywords": [
+    "ai-agent",
+    "multi-agent-system",
+    "pharmacy-automation",
+    "healthtech",
+    "voice-ai",
+    "stock-forecasting"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",

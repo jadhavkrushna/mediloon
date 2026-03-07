@@ -110,8 +110,8 @@ async def lifespan(app: FastAPI):
 
 # Create FastAPI app
 app = FastAPI(
-    title="Mediloon Agentic Ordering MVP",
-    description="Voice/text medicine ordering with agentic autonomy",
+    title="Mediloon AI - Multi-Agent Pharmacy System",
+    description="AI-driven multi-agent pharmacy system for autonomous medication ordering, real-time safety validation, stock forecasting, and procurement.",
     version="1.0.0",
     lifespan=lifespan,
 )
