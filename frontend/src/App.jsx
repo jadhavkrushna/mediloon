@@ -516,7 +516,16 @@ export default function App() {
                     customer_id: user?.id,
                 }),
             });
-            if (!response.ok) throw new Error('API Error');
+            if (!response.ok) {
+                let detail = 'API Error';
+                try {
+                    const errorData = await response.json();
+                    detail = errorData.detail || errorData.message || detail;
+                } catch {
+                    detail = `${detail} (${response.status})`;
+                }
+                throw new Error(detail);
+            }
             const data = await response.json();
             if (data.session_id) setSessionId(data.session_id);
             // Only add a text message if data.message actually has text (UI actions often have empty text)
