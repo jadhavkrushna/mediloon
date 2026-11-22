@@ -154,18 +154,35 @@ async def get_user_by_token(session_token: str = None, authorization: Optional[s
 
 @router.post("/register", response_model=AuthResponse)
 async def register(request: RegisterRequest):
-    """Register a new user."""
+    """Register a new user or sync password for existing user."""
+    password_hash = hash_password(request.password)
+    
     # Check if email already exists
-    existing = await execute_query(
-        "SELECT id FROM customers WHERE email = ?",
-        (request.email.lower(),)
-    )
+    existing = await execute_query("""
+        SELECT id, name, email, phone, age, gender, address, city, state, postal_code, country, notification_enabled, profile_completed, COALESCE(is_admin, 0) as is_admin
+        FROM customers WHERE email = ?
+    """, (request.email.lower(),))
     
     if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    
-    # Hash password
-    password_hash = hash_password(request.password)
+        user_row = dict(existing[0])
+        user_id = user_row['id']
+        # Update password hash and name/phone if provided
+        await execute_write("""
+            UPDATE customers
+            SET password_hash = ?,
+                name = COALESCE(NULLIF(?, ''), name),
+                phone = COALESCE(NULLIF(?, ''), phone)
+            WHERE id = ?
+        """, (password_hash, request.name, request.phone, user_id))
+        
+        session_token = create_access_token(data={"sub": str(user_id)})
+        user_row['name'] = request.name or user_row['name']
+        user_row['phone'] = request.phone or user_row['phone']
+        return AuthResponse(
+            user=UserResponse(**user_row),
+            session_token=session_token,
+            message="Account ready",
+        )
     
     # Create user
     profile_completed = all([request.age, request.gender, request.address])
@@ -176,12 +193,6 @@ async def register(request: RegisterRequest):
     
     # Create session (JWT)
     session_token = create_access_token(data={"sub": str(user_id)})
-    
-    # Note: We no longer insert into user_sessions as JWT is stateless
-    # await execute_write("""
-    #     INSERT INTO user_sessions (user_id, session_token, expires_at)
-    #     VALUES (?, ?, datetime('now', '+30 days'))
-    # """, (user_id, session_token))
     
     return AuthResponse(
         user=UserResponse(

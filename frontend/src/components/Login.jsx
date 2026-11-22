@@ -20,11 +20,18 @@ export default function Login({ onLogin, onCancel }) {
             throw new Error(t('firebaseNotConfigured'));
         }
         if (isRegister) {
-            const credential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-            if (formData.name) {
-                await updateProfile(credential.user, { displayName: formData.name });
+            try {
+                const credential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+                if (formData.name) {
+                    await updateProfile(credential.user, { displayName: formData.name });
+                }
+                return credential.user;
+            } catch (err) {
+                if (err.code === 'auth/email-already-in-use') {
+                    return (await signInWithEmailAndPassword(auth, formData.email, formData.password)).user;
+                }
+                throw err;
             }
-            return credential.user;
         }
         return (await signInWithEmailAndPassword(auth, formData.email, formData.password)).user;
     };
