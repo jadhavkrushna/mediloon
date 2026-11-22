@@ -63,7 +63,19 @@ export default function Login({ onLogin, onCancel }) {
             if (!response.ok) throw new Error(data.detail || t('sorry'));
             onLogin(data);
         } catch (err) {
-            setError(err.message);
+            let message = err.message;
+            if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+                message = "The email or password you entered is incorrect. Please try again or create an account.";
+            } else if (err.code === 'auth/too-many-requests') {
+                message = "Too many failed attempts. Please try again later or reset your password.";
+            } else if (err.code === 'auth/invalid-email') {
+                message = "Please enter a valid email address.";
+            } else if (err.code === 'auth/weak-password') {
+                message = "Password should be at least 6 characters long.";
+            } else if (err.code === 'auth/email-already-in-use') {
+                message = "This email is already registered. Please sign in.";
+            }
+            setError(message);
         } finally {
             setLoading(false);
         }

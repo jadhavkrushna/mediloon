@@ -86,6 +86,13 @@ async def lifespan(app: FastAPI):
     # Ensure admin account exists
     await seed_admin()
     print("✅ Admin account ready")
+
+    # Initialize Langfuse Observability
+    try:
+        from observability.langfuse_client import init_langfuse
+        init_langfuse()
+    except Exception as e:
+        print(f"⚠️ Langfuse init error: {e}")
     
     # Initialize vector store
     if VECTOR_BACKEND == "pinecone" and init_pinecone:

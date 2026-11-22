@@ -1,6 +1,6 @@
 """
-Langfuse Observability Client (v3 SDK)
-Provides tracing for NLU, Planner, and Agent operations.
+Langfuse Observability Client (v3 / v5 SDK)
+Provides tracing for NLU, Planner, and Agent operations following Langfuse best practices.
 """
 from typing import Optional, Any, Dict
 import time
@@ -12,7 +12,7 @@ from config import LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, LANGFUSE_HOST
 try:
     from langfuse import Langfuse
     LANGFUSE_AVAILABLE = True
-except Exception:  # Catches ImportError AND pydantic.v1 ConfigError on Python 3.14+
+except Exception:
     LANGFUSE_AVAILABLE = False
     Langfuse = None
 
@@ -20,6 +20,44 @@ except Exception:  # Catches ImportError AND pydantic.v1 ConfigError on Python 3
 # Global client instance
 _client: Optional[Any] = None
 _enabled = False
+
+
+class _ObservationWrapper:
+    """Wraps a Langfuse observation object to provide safe, backwards-compatible .update() and .end() handling."""
+
+    def __init__(self, raw_obs: Any):
+        self._raw_obs = raw_obs
+        self.id = getattr(raw_obs, 'id', None)
+        self.trace_id = getattr(raw_obs, 'trace_id', None)
+
+    def update(self, **kwargs):
+        if not self._raw_obs:
+            return
+        try:
+            if "usage" in kwargs:
+                usage = kwargs.pop("usage")
+                if isinstance(usage, dict) and "usage_details" not in kwargs:
+                    kwargs["usage_details"] = {
+                        "input": int(usage.get("input", usage.get("prompt_tokens", 0))),
+                        "output": int(usage.get("output", usage.get("completion_tokens", 0))),
+                        "total": int(usage.get("total", usage.get("total_tokens", 0))),
+                    }
+            self._raw_obs.update(**kwargs)
+        except Exception as e:
+            print(f"[Langfuse] Update observation warning: {e}")
+
+    def end(self, **kwargs):
+        if not self._raw_obs:
+            return
+        try:
+            if kwargs:
+                self.update(**kwargs)
+            self._raw_obs.end()
+        except Exception as e:
+            print(f"[Langfuse] End observation warning: {e}")
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._raw_obs, name)
 
 
 def init_langfuse() -> bool:
@@ -41,8 +79,44 @@ def init_langfuse() -> bool:
             host=LANGFUSE_HOST,
             timeout=15,
         )
+
+        # Backwards-compatible helpers for code calling start_generation / start_span on client
+        def _compat_start_generation(*args, **kwargs):
+            tc = kwargs.pop("trace_context", {})
+            name = kwargs.pop("name", "generation")
+            model = kwargs.pop("model", None)
+            inp = kwargs.pop("input", None)
+            meta = kwargs.pop("metadata", None)
+            obs = _client.start_observation(
+                trace_context=tc,
+                name=name,
+                as_type="generation",
+                model=model,
+                input=inp,
+                metadata=meta,
+                **kwargs
+            )
+            return _ObservationWrapper(obs)
+
+        def _compat_start_span(*args, **kwargs):
+            tc = kwargs.pop("trace_context", {})
+            name = kwargs.pop("name", "span")
+            as_type = kwargs.pop("as_type", "span")
+            obs = _client.start_observation(
+                trace_context=tc,
+                name=name,
+                as_type=as_type,
+                **kwargs
+            )
+            return _ObservationWrapper(obs)
+
+        if not hasattr(_client, "start_generation"):
+            _client.start_generation = _compat_start_generation
+        if not hasattr(_client, "start_span"):
+            _client.start_span = _compat_start_span
+
         _enabled = True
-        print("✅ Langfuse initialized successfully (v3 SDK)")
+        print("✅ Langfuse initialized successfully (v3/v5 SDK)")
         return True
     except Exception as e:
         print(f"⚠️ Failed to initialize Langfuse: {e}")
@@ -66,31 +140,25 @@ def create_trace(
     metadata: Optional[Dict] = None,
 ) -> Optional[Any]:
     """
-    Create a new trace for a session using Langfuse v3 SDK.
-
-    Returns:
-        A trace-like wrapper object, or None if Langfuse not enabled.
+    Create a new trace for a session using Langfuse SDK.
+    Uses 'agent' observation type as root according to multi-agent best practices.
     """
     if not _enabled or not _client:
         return None
 
     try:
-        # v3: use start_span at the top level to create a root span (acts as trace)
         trace_id = _client.create_trace_id()
-        span = _client.start_span(
+        obs = _client.start_observation(
             name=name,
+            as_type="agent",
             trace_context={"trace_id": trace_id},
-            metadata=metadata or {},
+            metadata={
+                **(metadata or {}),
+                "session_id": session_id,
+                "user_id": user_id or "anonymous",
+            },
         )
-        
-        # In v3, set trace-level attributes separately if needed
-        span.update_trace(
-            session_id=session_id,
-            user_id=user_id or "",
-        )
-        
-        # Wrap so callers can access .id = trace_id
-        return _TraceWrapper(trace_id=trace_id, root_span=span, session_id=session_id)
+        return _TraceWrapper(trace_id=trace_id, root_span=obs, session_id=session_id)
     except Exception as e:
         print(f"⚠️ Failed to create trace: {e}")
         return None
@@ -103,14 +171,13 @@ def get_trace_url(trace_id: str) -> str:
             url = _client.get_trace_url(trace_id=trace_id)
             if url:
                 return url
-        except Exception as e:
-            print(f"Failed to get trace URL from client: {e}")
+        except Exception:
             pass
     return f"{LANGFUSE_HOST}/trace/{trace_id}"
 
 
 class _TraceWrapper:
-    """Wraps a Langfuse v3 root span to provide a trace-like interface."""
+    """Wraps a Langfuse root span to provide a trace-like interface."""
 
     def __init__(self, trace_id: str, root_span: Any, session_id: str):
         self.id = trace_id
@@ -118,36 +185,49 @@ class _TraceWrapper:
         self.session_id = session_id
 
     def span(self, name: str, **kwargs) -> Any:
-        """Create a child span."""
+        """Create a child span observation."""
         if not _client:
             return _NoopSpan()
         try:
-            return _client.start_span(
+            tc = {"trace_id": self.id}
+            if hasattr(self._root_span, "id") and self._root_span.id:
+                tc["parent_span_id"] = self._root_span.id
+            obs = _client.start_observation(
                 name=name,
-                trace_context={"trace_id": self.id},
+                as_type="span",
+                trace_context=tc,
                 **kwargs,
             )
+            return _ObservationWrapper(obs)
         except Exception:
             return _NoopSpan()
 
     def generation(self, name: str, **kwargs) -> Any:
-        """Create a child generation span."""
+        """Create a child generation observation."""
         if not _client:
             return _NoopSpan()
         try:
-            return _client.start_generation(
+            tc = {"trace_id": self.id}
+            if hasattr(self._root_span, "id") and self._root_span.id:
+                tc["parent_span_id"] = self._root_span.id
+            obs = _client.start_observation(
                 name=name,
-                trace_context={"trace_id": self.id},
+                as_type="generation",
+                trace_context=tc,
                 **kwargs,
             )
+            return _ObservationWrapper(obs)
         except Exception:
             return _NoopSpan()
 
     def end(self, **kwargs):
-        """End the root span."""
+        """End the root observation."""
         try:
-            if self._root_span and hasattr(self._root_span, 'end'):
-                self._root_span.end(**kwargs)
+            if self._root_span:
+                if kwargs and hasattr(self._root_span, "update"):
+                    self._root_span.update(**kwargs)
+                if hasattr(self._root_span, "end"):
+                    self._root_span.end()
         except Exception:
             pass
 
@@ -205,10 +285,12 @@ class TracedOperation:
         duration = time.time() - self.start_time if self.start_time else 0
         if self.span:
             try:
-                self.span.end(
+                self.span.update(
                     metadata={"duration_ms": round(duration * 1000)},
-                    status_message="error" if exc_type else "success",
+                    level="ERROR" if exc_type else "DEFAULT",
+                    status_message=str(exc_val) if exc_val else "OK",
                 )
+                self.span.end()
             except Exception:
                 pass
         return False
