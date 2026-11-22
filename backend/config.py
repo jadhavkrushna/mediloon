@@ -21,8 +21,17 @@ for _env_path in [_render_secrets, _repo_root_env, _backend_env]:
 
 # Base paths
 BASE_DIR = Path(__file__).parent.parent
-DATA_DIR = BASE_DIR / "data"
-DB_PATH = DATA_DIR / "mediloon.db"
+_root_data = BASE_DIR / "data"
+_backend_data = Path(__file__).parent / "data"
+
+if _root_data.exists() and (_root_data / "mediloon.db").exists():
+    DATA_DIR = _root_data
+elif _backend_data.exists():
+    DATA_DIR = _backend_data
+else:
+    DATA_DIR = _root_data
+
+DB_PATH = Path(os.getenv("DB_PATH", str(DATA_DIR / "mediloon.db")))
 CHROMA_PATH = DATA_DIR / "chroma_db"
 
 # ── Groq Configuration (PRIMARY — fast, generous free tier) ─────────
@@ -68,13 +77,13 @@ LANGFUSE_HOST = os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com")
 # Server Config
 API_HOST = os.getenv("API_HOST", "0.0.0.0")
 API_PORT = int(os.getenv("API_PORT", "8000"))
+_extra_cors = [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
 CORS_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     # Production Vercel deployment
     "https://mediloon-frontend.vercel.app",
-    "https://*.vercel.app",
-]
+] + _extra_cors
 
 # Ordering limits (backend-enforced across voice/text/UI)
 MAX_ORDER_TOTAL_UNITS = int(os.getenv("MAX_ORDER_TOTAL_UNITS", "30"))

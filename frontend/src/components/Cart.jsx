@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ShoppingBag, Trash2, FileText, X } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 
-const API_BASE = '/api';
+import { API_BASE } from '../config/api';
 
 export default function Cart({ cart, sessionId, onRemove, onCheckout, onClear, onCartUpdate }) {
     const { t } = useLanguage();

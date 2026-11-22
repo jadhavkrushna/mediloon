@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
 
-const API_BASE = '/api';
+import { API_BASE } from '../config/api';
 
 export default function MedicineSearch({ isOpen, onClose, onAddToCart, sessionId }) {
     const { t, dir } = useLanguage();

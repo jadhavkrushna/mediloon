@@ -3,6 +3,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://mediloon.onrender.com/api/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }

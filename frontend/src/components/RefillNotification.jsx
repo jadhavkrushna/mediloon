@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 
-const API_BASE = '/api';
+import { API_BASE } from '../config/api';
 
 export default function RefillNotification({ customerId, onReorder }) {
   const { t } = useLanguage();

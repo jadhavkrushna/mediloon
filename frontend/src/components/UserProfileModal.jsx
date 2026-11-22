@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE } from '../config/api';
 import { useLanguage } from '../i18n/LanguageContext';
 
 export default function UserProfileModal({ user, sessionToken, onUpdate, onSkip, onClose, isVoiceMode }) {
@@ -29,7 +30,7 @@ export default function UserProfileModal({ user, sessionToken, onUpdate, onSkip,
         setError(null);
 
         try {
-            const response = await fetch('/api/auth/me', {
+            const response = await fetch(`${API_BASE}/auth/me`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

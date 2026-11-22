@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_BASE } from '../config/api';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '../firebase/firebaseClient';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -47,7 +48,7 @@ export default function Login({ onLogin, onCancel }) {
         setError(null);
         try {
             await ensureFirebaseAuth();
-            const endpoint = isRegister ? '/api/auth/register' : '/api/auth/login';
+            const endpoint = isRegister ? `${API_BASE}/auth/register` : `${API_BASE}/auth/login`;
             const body = { email: formData.email, password: formData.password };
             if (isRegister) {
                 body.name = formData.name;

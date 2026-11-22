@@ -28,7 +28,7 @@ import { useUI } from './contexts/UIContext';
 import { useTheme } from './contexts/ThemeContext';
 import { FiMic } from 'react-icons/fi';
 
-const API_BASE = '/api';
+import { API_BASE } from './config/api';
 const CHAT_TIMEOUT_MS = 60000;
 const OCR_CHAT_TIMEOUT_MS = 180000; // 3 min for prescription OCR analysis
 const DEFAULT_TTS_RATE = 1.0;

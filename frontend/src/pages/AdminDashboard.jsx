@@ -11,7 +11,7 @@ import {
   ChevronDown, ChevronUp, Eye, Plus, ArrowRight, Grid, Filter, Layers, Trash2
 } from 'lucide-react';
 
-const API_BASE = '/api';
+import { API_BASE } from '../config/api';
 
 function parsePackageSize(packageSize) {
   if (!packageSize) return { count: null, unit: 'unit' };

@@ -16,7 +16,7 @@ import PredictionTimeline from '../components/PredictionTimeline';
 import ConsumptionInsights from '../components/ConsumptionInsights';
 import { useRefillPredictions } from '../hooks/useRefillPredictions';
 
-const API_BASE = '/api';
+import { API_BASE } from '../config/api';
 
 export default function SmartRefills({ user, onBack, onReorder }) {
   const customerId = user?.id;
