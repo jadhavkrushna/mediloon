@@ -37,10 +37,10 @@ CHROMA_PATH = DATA_DIR / "chroma_db"
 # ── Groq Configuration (PRIMARY — fast, generous free tier) ─────────
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GROQ_BASE_URL = "https://api.groq.com/openai/v1"
-# Primary model on Groq: fast 70B
-GROQ_PRIMARY_MODEL = os.getenv("GROQ_PRIMARY_MODEL", "llama-3.3-70b-versatile")
-# Groq fallback: ultra-fast 8B
-GROQ_FALLBACK_MODEL = os.getenv("GROQ_FALLBACK_MODEL", "llama-3.1-8b-instant")
+# Primary model on Groq: Qwen 3.8 27B (available on this key)
+GROQ_PRIMARY_MODEL = os.getenv("GROQ_PRIMARY_MODEL", "qwen/qwen3.8-27b")
+# Groq fallback
+GROQ_FALLBACK_MODEL = os.getenv("GROQ_FALLBACK_MODEL", "openai/gpt-oss-20b")
 
 # ── OpenRouter Configuration (SECONDARY — fallback when Groq is down) ─
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
