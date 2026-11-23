@@ -48,12 +48,12 @@ OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 # Model Configuration — Unified LLM-first ordering agent
 # OpenRouter models: only used if Groq is unavailable
-NLU_MODEL = os.getenv("NLU_MODEL", "openrouter/auto")
+NLU_MODEL = os.getenv("NLU_MODEL", "meta-llama/llama-3.1-8b-instruct:free")
 # Fallback models: tried in order if primary returns 429 / timeout
 NLU_FALLBACK_MODELS = [
     m.strip() for m in os.getenv(
         "NLU_FALLBACK_MODELS",
-        "meta-llama/llama-3.1-8b-instruct,openai/gpt-4o-mini"
+        "openai/gpt-4o-mini"
     ).split(",") if m.strip()
 ]
 # Legacy — kept for backward compat but no longer used separately

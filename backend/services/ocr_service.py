@@ -29,7 +29,7 @@ from config import (
 )
 
 async def extract_text_from_image(image_path: str) -> Dict[str, Any]:
-    """Extract text from an image using Qwen Vision via OpenRouter."""
+    """Extract text from an image using Vision LLMs via OpenRouter with free fallbacks."""
     if not os.path.exists(image_path):
         if "mock_prescription" in image_path:
             return {
@@ -48,7 +48,7 @@ async def extract_text_from_image(image_path: str) -> Dict[str, Any]:
         return {"error": "File not found"}
 
     try:
-        print(f"📖 Reading image for OCR (Qwen Vision): {image_path}")
+        print(f"📖 Reading image for OCR: {image_path}")
         with open(image_path, "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
         
@@ -62,67 +62,92 @@ async def extract_text_from_image(image_path: str) -> Dict[str, Any]:
             "Authorization": f"Bearer {OPENROUTER_API_KEY}",
             "Content-Type": "application/json"
         }
-        
-        payload = {
-            "model": "qwen/qwen-2.5-vl-72b-instruct",
-            "messages": [
-                {
-                    "role": "user",
-                    "content": [
+
+        # Vision models to try in order of priority (free models first to avoid 402 Payment Required)
+        models_to_try = [
+            os.getenv("OCR_VISION_MODEL"),
+            "nvidia/nemotron-3.5-super-vl:free",
+            "google/gemma-4-26b-a4b-it:free",
+            "qwen/qwen-2.5-vl-72b-instruct",
+        ]
+        models_to_try = [m for m in models_to_try if m]
+
+        prompt_text = (
+            "Extract all the text from this prescription image. Just return the text accurately, "
+            "keeping the original layout or list items if possible. Do not include any conversational filler.\n\n"
+            "Please also structure the extracted information into a JSON format with the following keys:\n"
+            "- `medications`: A list of objects with `medicine_name` and `dosage`.\n"
+            "- `disease_or_illness`: The identified condition or primary illness based on the prescription (can be null if not found).\n"
+            "- `raw_text`: The exact text extracted from the image.\n\n"
+            "Please wrap the JSON object in a markdown code block (```json ... ```)."
+        )
+
+        last_error = None
+        for model_name in models_to_try:
+            try:
+                print(f"🔍 Attempting OCR with vision model: {model_name}")
+                payload = {
+                    "model": model_name,
+                    "messages": [
                         {
-                            "type": "text",
-                            "text": "Extract all the text from this prescription image. Just return the text accurately, keeping the original layout or list items if possible. Do not include any conversational filler.\n\nPlease also structure the extracted information into a JSON format with the following keys:\n- `medications`: A list of objects with `-medicine_name` and `dosage`.\n- `disease_or_illness`: The identified condition or primary illness based on the prescription (can be null if not found).\n- `raw_text`: The exact text extracted from the image.\n\nPlease wrap the JSON object in a markdown code block (```json ... ```)."
-                        },
-                        {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": data_url
-                            }
+                            "role": "user",
+                            "content": [
+                                {"type": "text", "text": prompt_text},
+                                {"type": "image_url", "image_url": {"url": data_url}}
+                            ]
                         }
                     ]
                 }
-            ]
-        }
-        
-        async with httpx.AsyncClient(timeout=120.0) as client:
-            response = await client.post(
-                "https://openrouter.ai/api/v1/chat/completions",
-                headers=headers,
-                json=payload
-            )
-            response.raise_for_status()
-            result_json = response.json()
-            
-            extracted_text = result_json["choices"][0]["message"]["content"].strip()
-            
-            # Simple heuristic to extract JSON block from thinking model output
-            structured_data = None
-            json_match = re.search(r'```(?:json)?\s*(.*?)\s*```', extracted_text, re.DOTALL)
-            
-            if json_match:
-                try:
-                    structured_data = json.loads(json_match.group(1).strip())
-                except json.JSONDecodeError as e:
-                    print(f"❌ OCR Log: JSON Decoder error: {e}")
-            else:
-                 # Try to parse the entire text as JSON
-                try:
-                    structured_data = json.loads(extracted_text)
-                except json.JSONDecodeError:
-                    pass
 
-            # fallback to returning just the extracted string text if json parse failed completely
-            final_text = structured_data.get("raw_text", extracted_text) if structured_data else extracted_text
+                async with httpx.AsyncClient(timeout=60.0) as client:
+                    response = await client.post(
+                        "https://openrouter.ai/api/v1/chat/completions",
+                        headers=headers,
+                        json=payload
+                    )
 
-            return {
-                "text": final_text,
-                "structured_data": structured_data,
-                "confidence": 0.95,
-                "source": "qwen-vision-openrouter"
-            }
+                    if response.status_code in (402, 429, 404):
+                        print(f"⚠️ Model {model_name} returned status {response.status_code}, trying next vision model...")
+                        last_error = f"{response.status_code} {response.text}"
+                        continue
+
+                    response.raise_for_status()
+                    result_json = response.json()
+
+                    extracted_text = result_json["choices"][0]["message"]["content"].strip()
+                    
+                    # Heuristic to extract JSON block from model output
+                    structured_data = None
+                    json_match = re.search(r'```(?:json)?\s*(.*?)\s*```', extracted_text, re.DOTALL)
+                    if json_match:
+                        try:
+                            structured_data = json.loads(json_match.group(1).strip())
+                        except json.JSONDecodeError as e:
+                            print(f"❌ OCR Log: JSON Decoder error: {e}")
+                    else:
+                        try:
+                            structured_data = json.loads(extracted_text)
+                        except json.JSONDecodeError:
+                            pass
+
+                    final_text = structured_data.get("raw_text", extracted_text) if structured_data else extracted_text
+
+                    print(f"✅ OCR successfully extracted text using {model_name}")
+                    return {
+                        "text": final_text,
+                        "structured_data": structured_data,
+                        "confidence": 0.95,
+                        "source": f"vision-openrouter-{model_name}"
+                    }
+            except Exception as model_err:
+                print(f"⚠️ OCR vision error on {model_name}: {model_err}")
+                last_error = str(model_err)
+                continue
+
+        return {"error": f"All vision models failed. Last error: {last_error}"}
             
     except Exception as e:
-        print(f"❌ OCR Log: Error processing image with Qwen: {e}")
+        print(f"❌ OCR Log: Error processing image: {e}")
         return {"error": str(e)}
 
 
@@ -195,8 +220,8 @@ Return JSON in this exact format:
             }
             async with httpx.AsyncClient(timeout=30.0) as client:
                 resp = await client.post(cfg["url"], headers=cfg["headers"], json=payload)
-                if resp.status_code == 429:
-                    print(f"⚠️ OCR LLM extraction: 429 from {cfg['model']}, trying next...")
+                if resp.status_code in (401, 402, 404, 429):
+                    print(f"⚠️ OCR LLM extraction: HTTP {resp.status_code} from {cfg['model']}, trying next...")
                     continue
                 resp.raise_for_status()
                 content = resp.json()["choices"][0]["message"]["content"].strip()
